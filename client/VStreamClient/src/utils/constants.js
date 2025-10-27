@@ -15,6 +15,8 @@ export const APP_ERROR_MESSAGES = {
 	},
 };
 
+export const DEFAULT_ROLE = "USER";
+
 export const MENU_ELEMENTS = [
 	{
 		title: "Alert Dialog",

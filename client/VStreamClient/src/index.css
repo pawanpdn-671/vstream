@@ -129,6 +129,10 @@
 }
 
 @layer utilities {
+	.bg-gradient {
+		background-image: var(--primary-gradient);
+		background-color: unset;
+	}
 	.bg-primary {
 		background-image: var(--primary-gradient);
 		background-color: unset;

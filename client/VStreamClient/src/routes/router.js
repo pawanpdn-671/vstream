@@ -1,5 +1,3 @@
-import HomePage from "@/pages/Home";
-import LandingPage from "@/pages/Landing";
 import { lazy } from "react";
 
 export const publicRoutes = [
@@ -13,7 +11,7 @@ export const publicRoutes = [
 	},
 	{
 		path: "/register",
-		component: null,
+		component: lazy(() => import("@/pages/Register")),
 	},
 ];
 

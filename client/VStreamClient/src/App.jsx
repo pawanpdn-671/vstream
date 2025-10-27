@@ -3,7 +3,7 @@ import PrivateRoute from "./routes/private-route";
 import { privateRoutes, publicRoutes } from "./routes/router";
 import PrivateLayout from "./layouts/private-layout";
 import { Suspense } from "react";
-import FallbackComponent from "./components/FallbackComponent";
+import FallbackComponent from "./components/fallback-component";
 import NotFoundPage from "./pages/not-found";
 
 function App() {
