@@ -92,16 +92,16 @@ func UpdateAllTokens(userId, token, refreshToken string, client *mongo.Client, c
 }
 
 func GetAccessToken(c *gin.Context) (string, error) {
-	authHeader := c.Request.Header.Get("Authorization")
-	if authHeader == "" {
-		return "", errors.New("authorization header is required")
+	token, err := c.Cookie("access_token")
+	if err != nil {
+		return "", errors.New("access token cookie not found")
 	}
-	tokenString := authHeader[len("Bearer "):]
 
-	if tokenString == "" {
-		return "", errors.New("bearer token is required")
+	if token == "" {
+		return "", errors.New("access token is empty")
 	}
-	return tokenString, nil
+
+	return token, nil
 }
 
 func ValidateToken(tokenString string) (*SignedDetails, error) {

@@ -4,7 +4,7 @@ import Movie from "./movie-card";
 const MoviesContainer = ({ movies }) => {
 	return (
 		<div className="mt-4">
-			<div className="grid grid-cols-4 gap-4">
+			<div className="grid grid-cols-4 gap-8">
 				{movies.map((movie) => (
 					<Movie key={movie._id} movie={movie} />
 				))}

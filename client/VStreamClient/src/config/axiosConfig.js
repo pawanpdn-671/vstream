@@ -11,13 +11,35 @@ const api = axios.create({
 	},
 });
 
+const refreshApi = axios.create({
+	baseURL: API_BASE_URL,
+	withCredentials: true,
+	timeout: 10000,
+	headers: {
+		"Content-Type": "application/json",
+	},
+});
+
 api.interceptors.response.use(
 	(res) => res.data,
-	(error) => {
-		const status = error.response?.status;
-		if (status === 401) {
-			console.warn("Unauthorized - token may be expired");
+	async (error) => {
+		const originalRequest = error.config;
+
+		if (originalRequest.url.includes("/refresh")) {
+			return Promise.reject(error);
 		}
+
+		if (error.response?.status === 401 && !originalRequest._retry) {
+			originalRequest._retry = true;
+			try {
+				await refreshApi.post("/refresh"); // get new tokens via cookie
+				console.log("thererere");
+				return api(originalRequest); // retry original request
+			} catch (e) {
+				console.error("Refresh token expired — logging out");
+			}
+		}
+
 		return Promise.reject(error);
 	},
 );

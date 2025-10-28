@@ -4,16 +4,20 @@ import { Badge } from "../shared/badge";
 
 const Movie = ({ movie }) => {
 	return (
-		<div className="relative">
-			<Card className={"shadow-sm"}>
-				<img src={movie.poster_path} alt={movie.title} className="object-contain h-[350px] w-full" />
-				<div className="absolute bg-black/80 bottom-0 left-0 w-full rounded-b-lg">
-					<CardHeader>
-						<CardTitle>{movie.title}</CardTitle>
+		<div className="relative group rounded-md overflow-hidden cursor-pointer">
+			<Card className={"shadow-sm p-0"}>
+				<img src={movie.poster_path} alt={movie.title} className="rounded-md transition-transform duration-500" />
+				<div
+					className="absolute top-0 left-0 w-full h-full 
+					bg-black/60 text-background p-4
+					translate-y-full opacity-0 group-hover:opacity-100 group-hover:translate-y-1/2 
+					transition-transform duration-500 ease-in-out">
+					<CardHeader className={"p-0"}>
+						<CardTitle className={"font-medium"}>{movie.title}</CardTitle>
 						<CardDescription></CardDescription>
 						<CardAction></CardAction>
 					</CardHeader>
-					<CardContent>
+					<CardContent className={"p-0"}>
 						{movie?.ranking?.ranking_name && <Badge variant="secondary">{movie.ranking.ranking_name}</Badge>}
 					</CardContent>
 				</div>

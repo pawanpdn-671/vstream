@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import LogoText from "./shared/logo-text";
 import { useEffect, useState } from "react";
+import ProfileMenu from "./profile";
 
 const NavigationBar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -40,11 +41,15 @@ const NavigationBar = () => {
 						</NavigationMenuItem>
 						<NavigationMenuItem>
 							<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-								<Link to="/docs">Docs</Link>
+								<Link to="/recommended-movies">Recommended Movies</Link>
+							</NavigationMenuLink>
+							<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+								<Link to="/recommended-movies">Get Movie</Link>
 							</NavigationMenuLink>
 						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
+				<ProfileMenu />
 			</div>
 		</div>
 	);

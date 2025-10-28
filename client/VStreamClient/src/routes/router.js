@@ -20,4 +20,16 @@ export const privateRoutes = [
 		path: "/home",
 		component: lazy(() => import("@/pages/Home")),
 	},
+	{
+		path: "/recommended-movies",
+		component: lazy(() => import("@/pages/RecommendedMovies")),
+	},
+	{
+		path: "/get-your-movie",
+		component: lazy(() => import("@/pages/GetMovie")),
+	},
+	{
+		path: "/settings",
+		component: lazy(() => import("@/pages/Settings")),
+	},
 ];
