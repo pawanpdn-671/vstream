@@ -2,6 +2,6 @@ import api from "@/config/axiosConfig";
 
 export const authApi = {
 	register: (payload) => api.post("/register", payload),
-	login: () => api.post("/login"),
+	login: (payload) => api.post("/login", payload),
 	logout: () => api.post("/logout"),
 };

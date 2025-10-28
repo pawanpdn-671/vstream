@@ -13,6 +13,7 @@ import { Label } from "../shared/label";
 import { useRegister } from "@/hooks/auth/useRegister";
 import { toSnakeCase } from "@/utils/case-convert";
 import { DEFAULT_ROLE } from "@/utils/constants";
+import { Link, useNavigate } from "react-router-dom";
 
 const registerSchema = z
 	.object({
@@ -31,6 +32,7 @@ const registerSchema = z
 export function RegisterForm() {
 	const { genres, isLoading } = useGenres();
 	const { registerUser, isPending, isSuccess, errorMessage } = useRegister();
+	const navigate = useNavigate();
 
 	const { handleSubmit, control, reset } = useForm({
 		resolver: zodResolver(registerSchema),
@@ -45,7 +47,6 @@ export function RegisterForm() {
 	});
 
 	const onSubmit = (data) => {
-		console.log("submitting");
 		const { confirmPassword, favouriteGenres, ...rest } = data;
 		const favouriteGenreObjects = favouriteGenres?.map((id) => {
 			const found = genres.find((g) => g.genre_id === id);
@@ -61,8 +62,6 @@ export function RegisterForm() {
 			role: DEFAULT_ROLE,
 		});
 
-		console.log("payload", payload);
-
 		registerUser(payload, {
 			onSuccess: () => {
 				toast.success("🎉 Registration successful!", {
@@ -70,6 +69,7 @@ export function RegisterForm() {
 					className: "bg-gradient",
 				});
 				reset();
+				navigate("/login", { replace: true });
 			},
 			onError: (error) => {
 				toast.error("Registration failed", {
@@ -193,6 +193,13 @@ export function RegisterForm() {
 						Cancel
 					</Button>
 				</Field>
+
+				<div className="text-sm mt-5 text-center text-muted-foreground">
+					Already have an account?
+					<Link to="/login" className="ml-2 text-gradient transition-colors">
+						Login
+					</Link>
+				</div>
 			</FieldGroup>
 		</form>
 	);

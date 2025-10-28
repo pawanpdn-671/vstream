@@ -1,5 +1,6 @@
 import { Button } from "@/components/shared/button";
 import LogoText from "../shared/logo-text";
+import { Link } from "react-router-dom";
 
 export function Header() {
 	return (
@@ -21,9 +22,11 @@ export function Header() {
 
 				<div className="flex items-center gap-3">
 					<Button variant="ghost" className="text-sm">
-						Sign In
+						<Link to="/login">Sign In</Link>
 					</Button>
-					<Button>Get Started</Button>
+					<Button>
+						<Link to="/register">Get Started</Link>
+					</Button>
 				</div>
 			</div>
 		</header>

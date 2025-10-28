@@ -7,7 +7,7 @@ export const publicRoutes = [
 	},
 	{
 		path: "/login",
-		component: null,
+		component: lazy(() => import("@/pages/Login")),
 	},
 	{
 		path: "/register",

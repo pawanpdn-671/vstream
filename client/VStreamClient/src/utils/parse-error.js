@@ -2,7 +2,7 @@ export function parseError(error) {
 	if (!error) return "An unknown error occurred.";
 
 	if (error.response) {
-		return error.response.data?.message || "Server error occurred.";
+		return error.response.data?.error || "Server error occurred.";
 	}
 
 	if (error.request || error.code === "ERR_NETWORK") {
