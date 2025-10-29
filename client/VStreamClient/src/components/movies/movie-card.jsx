@@ -4,12 +4,12 @@ import { Badge } from "../shared/badge";
 
 const Movie = ({ movie }) => {
 	return (
-		<div className="min-h-[400px] w-full relative group rounded-md overflow-hidden cursor-pointer">
+		<div className="min-h-[300px] w-full relative group rounded-md overflow-hidden cursor-pointer">
 			<Card className={"shadow-sm h-full w-full p-0"}>
 				<img
 					src={movie.poster_path}
 					alt={movie.title}
-					className="rounded-md transition-transform duration-500 object-cover"
+					className="rounded-md h-full transition-transform duration-500 object-cover"
 				/>
 				<div
 					className="absolute top-0 left-0 w-full h-full 

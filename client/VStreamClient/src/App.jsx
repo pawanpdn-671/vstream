@@ -5,10 +5,12 @@ import PrivateLayout from "./layouts/private-layout";
 import { Suspense } from "react";
 import FallbackComponent from "./components/fallback-component";
 import NotFoundPage from "./pages/not-found";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
 	return (
 		<Suspense fallback={<FallbackComponent />}>
+			<ScrollToTop />
 			<Routes>
 				{/* Public Routes */}
 				{publicRoutes.map(({ path, component: Page }) => (

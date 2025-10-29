@@ -31,6 +31,7 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		defer cancel()
 
 		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
+
 		// Parse query parameters
 		page, err1 := strconv.Atoi(c.DefaultQuery("page", "1"))
 		limit, err2 := strconv.Atoi(c.DefaultQuery("limit", "10"))
@@ -317,6 +318,21 @@ func GetRecommendedMovies(client *mongo.Client) gin.HandlerFunc {
 
 		filter := bson.M{"genre.genre_name": bson.M{"$in": favourite_genres}}
 
+		// Parse query parameters
+		page, err1 := strconv.Atoi(c.DefaultQuery("page", "1"))
+		limit, err2 := strconv.Atoi(c.DefaultQuery("limit", "10"))
+
+		if err1 != nil || err2 != nil || page < 1 || limit < 1 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
+			return
+		}
+
+		skip := (page - 1) * limit
+
+		// MongoDB find options for pagination
+		findOptions.SetSkip(int64(skip))
+		findOptions.SetLimit(int64(limit))
+
 		var ctx, cancel = context.WithTimeout(c, 100*time.Second)
 		defer cancel()
 
@@ -336,8 +352,14 @@ func GetRecommendedMovies(client *mongo.Client) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+		total, _ := movieCollection.CountDocuments(ctx, filter)
 
-		c.JSON(http.StatusOK, recommendedMovies)
+		c.JSON(http.StatusOK, gin.H{
+			"page":       page,
+			"total":      total,
+			"totalPages": int(math.Ceil(float64(total) / float64(limit))),
+			"data":       recommendedMovies,
+		})
 	}
 }
 
