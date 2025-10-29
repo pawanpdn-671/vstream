@@ -28,23 +28,29 @@ const NavigationBar = () => {
 				className={`flex items-center justify-between transition-all duration-300
 				${
 					isScrolled
-						? "rounded-full bg-background/80 backdrop-blur-lg shadow-md py-2 px-5"
+						? "rounded-full bg-background/90 backdrop-blur-sm shadow-md py-2 px-5"
 						: "rounded-none bg-background py-4"
 				}`}>
 				<LogoText size="md" textSize="md" />
 				<NavigationMenu>
 					<NavigationMenuList className="flex-wrap">
 						<NavigationMenuItem>
-							<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-								<Link to="/home">Home</Link>
+							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
+								<Link to="/home" className="text-gradient">
+									Home
+								</Link>
 							</NavigationMenuLink>
 						</NavigationMenuItem>
 						<NavigationMenuItem>
-							<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-								<Link to="/recommended-movies">Recommended Movies</Link>
+							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
+								<Link to="/recommended-movies" className="text-gradient">
+									Recommended Movies
+								</Link>
 							</NavigationMenuLink>
-							<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-								<Link to="/recommended-movies">Get Movie</Link>
+							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
+								<Link to="/recommended-movies" className="text-gradient">
+									Get Movie
+								</Link>
 							</NavigationMenuLink>
 						</NavigationMenuItem>
 					</NavigationMenuList>

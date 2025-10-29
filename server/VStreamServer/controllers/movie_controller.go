@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -30,21 +31,45 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		defer cancel()
 
 		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
+		// Parse query parameters
+		page, err1 := strconv.Atoi(c.DefaultQuery("page", "1"))
+		limit, err2 := strconv.Atoi(c.DefaultQuery("limit", "10"))
 
-		var movies []models.Movie
+		if err1 != nil || err2 != nil || page < 1 || limit < 1 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
+			return
+		}
 
-		cursor, err := movieCollection.Find(ctx, bson.M{})
+		skip := (page - 1) * limit
 
+		// MongoDB find options for pagination
+		findOptions := options.Find()
+		findOptions.SetSkip(int64(skip))
+		findOptions.SetLimit(int64(limit))
+
+		// Fetch data
+		cursor, err := movieCollection.Find(ctx, bson.M{}, findOptions)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch movies"})
+			return
 		}
 		defer cursor.Close(ctx)
 
+		var movies []models.Movie
 		if err = cursor.All(ctx, &movies); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode movies."})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode movies"})
+			return
 		}
 
-		c.JSON(http.StatusOK, movies)
+		// count total documents to send pagination info
+		total, _ := movieCollection.CountDocuments(ctx, bson.M{})
+
+		c.JSON(http.StatusOK, gin.H{
+			"page":       page,
+			"total":      total,
+			"totalPages": int(math.Ceil(float64(total) / float64(limit))),
+			"data":       movies,
+		})
 	}
 }
 

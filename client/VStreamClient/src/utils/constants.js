@@ -16,6 +16,7 @@ export const APP_ERROR_MESSAGES = {
 };
 
 export const DEFAULT_ROLE = "USER";
+export const FETCH_MOVIE_LIMIT = 10;
 
 export const MENU_ELEMENTS = [
 	{

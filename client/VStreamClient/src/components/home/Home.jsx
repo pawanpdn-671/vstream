@@ -3,7 +3,7 @@ import { EmptyResult } from "../empty-result";
 import { APP_EMPTY_MESSAGES, APP_ERROR_MESSAGES } from "@/utils/constants";
 import MoviesContainer from "../movies/movies";
 
-const Home = ({ movies, errorMessage, isError }) => {
+const Home = ({ movies, errorMessage, isError, isLoading, isFetchingNextPage }) => {
 	if (isError) {
 		return (
 			<EmptyResult
@@ -19,7 +19,7 @@ const Home = ({ movies, errorMessage, isError }) => {
 	return (
 		<div>
 			{movies?.length > 0 ? (
-				<MoviesContainer movies={movies} />
+				<MoviesContainer movies={movies} isLoading={isLoading} isFetchingNextPage={isFetchingNextPage} />
 			) : (
 				<EmptyResult
 					title={APP_EMPTY_MESSAGES.MOVIES.TITLE}

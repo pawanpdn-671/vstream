@@ -23,4 +23,5 @@ type Movie struct {
 	Genre       []Genre       `bson:"genre" json:"genre" validate:"required,dive"`
 	AdminReview string        `bson:"admin_review" json:"admin_review"`
 	Ranking     Ranking       `bson:"ranking" json:"ranking" validate:"required"`
+	Plot        string        `bson:"plot" json:"plot" validate:"required"`
 }

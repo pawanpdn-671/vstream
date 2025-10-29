@@ -1,15 +1,15 @@
+import { useAuth } from "@/context/AuthContext";
+import { useLogin } from "@/hooks/auth/useLogin";
+import { toSnakeCase } from "@/utils/case-convert";
+import { parseError } from "@/utils/parse-error";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import * as z from "zod";
+import { Button } from "../shared/button";
 import { Field, FieldGroup, FieldLabel } from "../shared/field";
 import { Input } from "../shared/input";
-import { Button } from "../shared/button";
-import { toSnakeCase } from "@/utils/case-convert";
-import { useLogin } from "@/hooks/auth/useLogin";
-import { toast } from "sonner";
-import { parseError } from "@/utils/parse-error";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
 	email: z.email("Invalid email address."),
@@ -18,6 +18,7 @@ const loginSchema = z.object({
 
 const LoginForm = () => {
 	const { loginUser, isPending, isSuccess, errorMessage } = useLogin();
+	const { refetch } = useAuth();
 	const { handleSubmit, control, reset } = useForm({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
@@ -26,20 +27,18 @@ const LoginForm = () => {
 		},
 	});
 	const navigate = useNavigate();
-	const location = useLocation();
-	const from = location.state?.from?.pathname || "/";
 
 	const onSubmit = (data) => {
 		const payload = toSnakeCase(data);
 
 		loginUser(payload, {
-			onSuccess: () => {
+			onSuccess: async () => {
 				toast.success("🎉 Login successful!", {
 					description: "Welcome back! stay tuned",
 					className: "bg-gradient",
 				});
-				reset();
-				navigate(from, { replace: true });
+				await refetch();
+				navigate("/home");
 			},
 			onError: (error) => {
 				toast.error("Login failed", {

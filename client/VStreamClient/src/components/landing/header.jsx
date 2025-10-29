@@ -1,8 +1,10 @@
 import { Button } from "@/components/shared/button";
 import LogoText from "../shared/logo-text";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export function Header() {
+	const { isAuthenticated } = useAuth();
 	return (
 		<header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -21,11 +23,15 @@ export function Header() {
 				</nav>
 
 				<div className="flex items-center gap-3">
-					<Button variant="ghost" className="text-sm">
-						<Link to="/login">Sign In</Link>
-					</Button>
+					{!isAuthenticated && (
+						<Button variant="ghost" className="text-sm">
+							<Link to="/login">Sign In</Link>
+						</Button>
+					)}
 					<Button>
-						<Link to="/register">Get Started</Link>
+						<Link to={isAuthenticated ? "/home" : "/register"}>
+							{isAuthenticated ? "Go to Movie Library" : "Get Started"}
+						</Link>
 					</Button>
 				</div>
 			</div>

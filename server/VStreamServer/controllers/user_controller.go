@@ -116,24 +116,12 @@ func LoginUser(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		err = utils.UpdateAllTokens(foundUser.UserID, token, refreshToken, client, c)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update tokens"})
-			return
-		}
-
-		c.SetCookie("access_token", token, 3600, "/", "localhost", true, true)
-		c.SetCookie("refresh_token", refreshToken, 604800, "/", "localhost", true, true)
+		c.SetCookie("access_token", token, int(utils.TokenExpirationTime.Seconds()), "/", "", false, true)
+		c.SetCookie("refresh_token", refreshToken, int(utils.RefreshTokenExpirationTime.Seconds()), "/", "", false, true)
 
 		c.JSON(http.StatusOK, models.UserResponse{
-			UserId:          foundUser.UserID,
-			FirstName:       foundUser.FirstName,
-			LastName:        foundUser.LastName,
-			Email:           foundUser.Email,
-			Role:            foundUser.Role,
-			Token:           token,
-			RefreshToken:    refreshToken,
-			FavouriteGenres: foundUser.FavouriteGenres,
+			Email:  foundUser.Email,
+			UserId: foundUser.UserID,
 		})
 	}
 }
@@ -195,14 +183,9 @@ func RefreshTokenHandler(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		newToken, newRefreshToken, _ := utils.GenerateAllToken(user.Email, user.FirstName, user.LastName, user.Role, user.UserID)
-		err = utils.UpdateAllTokens(user.UserID, newToken, newRefreshToken, client, c)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating tokens"})
-			return
-		}
 
-		c.SetCookie("access_token", newToken, 86400, "/", "localhost", true, true)          // expires in 24 hours
-		c.SetCookie("refresh_token", newRefreshToken, 604800, "/", "localhost", true, true) //expires in 1 week
+		c.SetCookie("access_token", newToken, int(utils.TokenExpirationTime.Seconds()), "/", "", false, true)
+		c.SetCookie("refresh_token", newRefreshToken, int(utils.RefreshTokenExpirationTime.Seconds()), "/", "", false, true)
 
 		c.JSON(http.StatusOK, gin.H{"message": "Tokens refreshed"})
 	}

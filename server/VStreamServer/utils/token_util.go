@@ -1,16 +1,12 @@
 package utils
 
 import (
-	"context"
 	"errors"
 	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	jwt "github.com/golang-jwt/jwt/v5"
-	"github.com/pawanpdn-671/vstream/server/VStreamServer/database"
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type SignedDetails struct {
@@ -36,7 +32,7 @@ func GenerateAllToken(email, firstName, lastName, role, userId string) (string, 
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "VStream",
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 1 day validity
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(int(TokenExpirationTime)))), // 1 day validity
 		},
 	}
 
@@ -46,7 +42,7 @@ func GenerateAllToken(email, firstName, lastName, role, userId string) (string, 
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "VStream",
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)), // 7 days validity
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(int(RefreshTokenExpirationTime)))), // 7 days validity
 		},
 	}
 
@@ -65,30 +61,6 @@ func GenerateAllToken(email, firstName, lastName, role, userId string) (string, 
 	}
 
 	return signedToken, signedRefreshToken, nil
-}
-
-func UpdateAllTokens(userId, token, refreshToken string, client *mongo.Client, c *gin.Context) (err error) {
-	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
-	defer cancel()
-
-	updated_at, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-
-	updateData := bson.M{
-		"$set": bson.M{
-			"token":         token,
-			"refresh_token": refreshToken,
-			"updated_at":    updated_at,
-		},
-	}
-
-	var userCollection *mongo.Collection = database.OpenCollection("users", client)
-	_, err = userCollection.UpdateOne(ctx, bson.M{"user_id": userId}, updateData)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func GetAccessToken(c *gin.Context) (string, error) {

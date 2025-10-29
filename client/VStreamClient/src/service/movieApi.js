@@ -1,7 +1,7 @@
 import api from "@/config/axiosConfig";
 
 export const movieApi = {
-	getMovies: () => api.get("/movies"),
+	getMovies: ({ pageParam, limit }) => api.get("/movies", { params: { page: pageParam, limit } }),
 	getMovieById: () => api.get("/movie/:imdb_id"),
 	getGenres: () => api.get("/genres"),
 };
