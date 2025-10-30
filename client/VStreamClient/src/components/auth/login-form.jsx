@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { useLogin } from "@/hooks/auth/useLogin";
 import { toSnakeCase } from "@/utils/case-convert";
 import { parseError } from "@/utils/parse-error";
@@ -10,6 +9,7 @@ import * as z from "zod";
 import { Button } from "../shared/button";
 import { Field, FieldGroup, FieldLabel } from "../shared/field";
 import { Input } from "../shared/input";
+import { useProfile } from "@/hooks/auth/useProfile";
 
 const loginSchema = z.object({
 	email: z.email("Invalid email address."),
@@ -18,7 +18,8 @@ const loginSchema = z.object({
 
 const LoginForm = () => {
 	const { loginUser, isPending, isSuccess, errorMessage } = useLogin();
-	const { refetch } = useAuth();
+	const { refetch, isLoading } = useProfile({ enabled: false });
+
 	const { handleSubmit, control, reset } = useForm({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {

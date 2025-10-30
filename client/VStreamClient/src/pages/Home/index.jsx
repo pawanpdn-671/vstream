@@ -1,8 +1,9 @@
 import MoviesContainer from "@/components/movies/movies";
+import SearchBar from "@/components/search-bar";
 import PageWrapper from "@/components/shared/page-wrapper";
 import { Skeleton } from "@/components/shared/skeleton";
 import { useMovies } from "@/hooks/movies/useMovies";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 const HomePage = () => {

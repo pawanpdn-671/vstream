@@ -3,10 +3,12 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -42,6 +44,23 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		skip := (page - 1) * limit
+		search := c.Query("search")
+		genre := c.Query("genre")
+		filter := bson.M{}
+
+		if search != "" {
+			filter["title"] = bson.M{
+				"$regex":   regexp.QuoteMeta(search),
+				"$options": "i",
+			}
+		}
+
+		if genre != "" {
+			filter["genre.genre_name"] = bson.M{
+				"$regex":   regexp.QuoteMeta(genre),
+				"$options": "i",
+			}
+		}
 
 		// MongoDB find options for pagination
 		findOptions := options.Find()
@@ -49,9 +68,12 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		findOptions.SetLimit(int64(limit))
 
 		// Fetch data
-		cursor, err := movieCollection.Find(ctx, bson.M{}, findOptions)
+		cursor, err := movieCollection.Find(ctx, filter, findOptions)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch movies"})
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":  fmt.Sprintf("Failed to fetch movies: %v", err),
+				"filter": filter,
+			})
 			return
 		}
 		defer cursor.Close(ctx)
@@ -63,7 +85,7 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		// count total documents to send pagination info
-		total, _ := movieCollection.CountDocuments(ctx, bson.M{})
+		total, _ := movieCollection.CountDocuments(ctx, filter)
 
 		c.JSON(http.StatusOK, gin.H{
 			"page":       page,

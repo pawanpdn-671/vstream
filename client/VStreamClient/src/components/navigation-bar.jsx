@@ -1,17 +1,13 @@
-import {
-	NavigationMenu,
-	NavigationMenuItem,
-	NavigationMenuLink,
-	NavigationMenuList,
-	navigationMenuTriggerStyle,
-} from "@/components/shared/navigation-menu";
-import { Link } from "react-router-dom";
-import LogoText from "./shared/logo-text";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ProfileMenu from "./profile";
+import SearchBar from "./search-bar";
+import LogoText from "./shared/logo-text";
+import { useMovieStore } from "@/store/useMovieStore";
 
 const NavigationBar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
+	const { searchQuery, setSearchQuery } = useMovieStore();
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -21,6 +17,10 @@ const NavigationBar = () => {
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+	};
 
 	return (
 		<div className={`max-w-7xl sticky top-0 z-50 mx-auto px-5 pt-2`}>
@@ -32,30 +32,30 @@ const NavigationBar = () => {
 						: "rounded-none bg-background py-4"
 				}`}>
 				<LogoText size="md" textSize="md" />
-				<NavigationMenu>
-					<NavigationMenuList className="flex-wrap">
-						<NavigationMenuItem>
-							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
-								<Link to="/home" className="text-gradient">
-									Home
-								</Link>
-							</NavigationMenuLink>
-						</NavigationMenuItem>
-						<NavigationMenuItem>
-							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
-								<Link to="/recommended-movies" className="text-gradient">
-									Recommended Movies
-								</Link>
-							</NavigationMenuLink>
-							<NavigationMenuLink asChild className={`${navigationMenuTriggerStyle()} bg-transparent`}>
-								<Link to="/recommended-movies" className="text-gradient">
-									Get Movie
-								</Link>
-							</NavigationMenuLink>
-						</NavigationMenuItem>
-					</NavigationMenuList>
-				</NavigationMenu>
-				<ProfileMenu />
+
+				<div className="w-[500px] ml-auto">
+					<SearchBar
+						handleChange={setSearchQuery}
+						value={searchQuery}
+						placeholder="Search Movie..."
+						onClick={handleSubmit}
+					/>
+				</div>
+
+				<div className="ml-[50px] flex gap-4">
+					<Link to="/home" className="text-sm text-gradient">
+						Home
+					</Link>
+
+					<Link to="/recommended-movies" className="text-sm text-gradient">
+						Recommended Movies
+					</Link>
+
+					<Link to="/recommended-movies" className="text-sm text-gradient">
+						Get Movie
+					</Link>
+					<ProfileMenu />
+				</div>
 			</div>
 		</div>
 	);

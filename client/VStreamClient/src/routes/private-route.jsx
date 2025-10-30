@@ -1,12 +1,12 @@
 import FallbackComponent from "@/components/fallback-component";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/useAuthStore";
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = () => {
-	const { isAuthenticated, isLoading } = useAuth();
+	const { isLoading, isAuthenticated, hasFetchedProfile } = useAuthStore();
 
-	if (isLoading) return <FallbackComponent />;
+	if (isLoading || !hasFetchedProfile) return <FallbackComponent />;
 	return isAuthenticated ? <Outlet /> : <Navigate to={"/login"} replace />;
 };
 

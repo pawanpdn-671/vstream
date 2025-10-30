@@ -2,10 +2,12 @@ import { authApi } from "@/service/authApi";
 import { parseError } from "@/utils/parse-error";
 import { useQuery } from "@tanstack/react-query";
 
-export const useProfile = () => {
+export const useProfile = (options) => {
+	const { enabled = true } = options ?? {};
 	const { data, error, isLoading, isError, isFetching, refetch } = useQuery({
 		queryKey: ["profile"],
 		queryFn: authApi.profile,
+		enabled,
 	});
 
 	const errorMessage = isError ? parseError(error) : "";

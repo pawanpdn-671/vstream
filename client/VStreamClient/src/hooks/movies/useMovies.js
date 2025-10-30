@@ -1,12 +1,16 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { movieApi } from "@/service/movieApi";
 import { parseError } from "@/utils/parse-error";
+import { useMovieStore } from "@/store/useMovieStore";
 
-export const useMovies = () => {
+export const useMovies = (filters = {}) => {
+	const { genre = "" } = filters;
+	const { searchQuery: search } = useMovieStore();
+
 	const { data, error, isLoading, isError, isFetching, isFetchingNextPage, hasNextPage, refetch, fetchNextPage } =
 		useInfiniteQuery({
-			queryKey: ["movies"],
-			queryFn: ({ pageParam = 1 }) => movieApi.getMovies({ pageParam }),
+			queryKey: ["movies", search, genre],
+			queryFn: ({ pageParam = 1 }) => movieApi.getMovies({ pageParam, search, genre }),
 			getNextPageParam: (lastPage) => {
 				// lastPage is the backend response
 				const { page, totalPages } = lastPage;

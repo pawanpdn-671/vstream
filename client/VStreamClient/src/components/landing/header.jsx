@@ -1,10 +1,11 @@
 import { Button } from "@/components/shared/button";
 import LogoText from "../shared/logo-text";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export function Header() {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated } = useAuthStore();
+
 	return (
 		<header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
