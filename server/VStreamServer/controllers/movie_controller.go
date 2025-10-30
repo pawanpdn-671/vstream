@@ -453,3 +453,51 @@ func GetGenres(client *mongo.Client) gin.HandlerFunc {
 
 	}
 }
+
+func GetBookmarkedMovies(client *mongo.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(c, 100*time.Second)
+		defer cancel()
+
+		userId, err := utils.GetUserIdFromContext(c)
+
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "No user found to get bookmarked movies."})
+			return
+		}
+
+		var user models.User
+
+		userCollection := database.OpenCollection("users", client)
+		err = userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if len(user.BookmarkedMovieIDs) == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "No bookmarks added for this user."})
+			return
+		}
+
+		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
+		cursor, err := movieCollection.Find(ctx, bson.M{"_id": bson.M{"$in": user.BookmarkedMovieIDs}})
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		defer cursor.Close(ctx)
+
+		var bookmarkedMovies []models.Movie
+
+		if err = cursor.All(ctx, &bookmarkedMovies); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get bookmarked movies."})
+			return
+		}
+
+		c.JSON(http.StatusOK, bookmarkedMovies)
+	}
+}
