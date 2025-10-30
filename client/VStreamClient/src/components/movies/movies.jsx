@@ -7,20 +7,22 @@ import { APP_EMPTY_MESSAGES, APP_ERROR_MESSAGES } from "@/utils/constants";
 const MoviesContainer = ({ movies, errorMessage, isError, isLoading, isFetching, ref }) => {
 	if (isError) {
 		return (
-			<EmptyResult
-				title={APP_ERROR_MESSAGES.MOVIES.TITLE}
-				icon={APP_ERROR_MESSAGES.MOVIES.ICON}
-				description={errorMessage}
-				iconColor={"destructive"}
-				noAction={true}
-			/>
+			<div className="mt-10 text-center">
+				<EmptyResult
+					title={APP_ERROR_MESSAGES.MOVIES.TITLE}
+					icon={APP_ERROR_MESSAGES.MOVIES.ICON}
+					description={errorMessage}
+					iconColor={"destructive"}
+					noAction={true}
+				/>
+			</div>
 		);
 	}
 
 	return (
 		<div className="py-10">
 			<div className="grid grid-cols-4 gap-8 pb-10">
-				{movies?.length > 0 && movies.map((movie) => <Movie key={movie._id} movie={movie} />)}
+				{movies && movies?.length > 0 && movies?.map((movie) => <Movie key={movie._id} movie={movie} />)}
 				{isFetching && <HomePage.Skeleton />}
 			</div>
 			{!isLoading && !isFetching && movies?.length === 0 && (

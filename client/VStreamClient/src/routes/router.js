@@ -32,4 +32,15 @@ export const privateRoutes = [
 		path: "/settings",
 		component: lazy(() => import("@/pages/Settings")),
 	},
+	{
+		path: "/stream/:imdb_id",
+		component: lazy(() => import("@/pages/Stream")),
+	},
+];
+
+export const adminRoutes = [
+	{
+		path: "/review/:id",
+		component: lazy(() => import("@/pages/Review")),
+	},
 ];

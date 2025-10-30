@@ -18,10 +18,6 @@ const NavigationBar = () => {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-	};
-
 	return (
 		<div className={`max-w-7xl sticky top-0 z-50 mx-auto px-5 pt-2`}>
 			<div
@@ -33,13 +29,8 @@ const NavigationBar = () => {
 				}`}>
 				<LogoText size="md" textSize="md" />
 
-				<div className="w-[500px] ml-auto">
-					<SearchBar
-						handleChange={setSearchQuery}
-						value={searchQuery}
-						placeholder="Search Movie..."
-						onClick={handleSubmit}
-					/>
+				<div className="w-[400px] ml-auto">
+					<SearchBar handleSearch={setSearchQuery} placeholder="Search Movie..." />
 				</div>
 
 				<div className="ml-[50px] flex gap-4">

@@ -13,9 +13,14 @@ export const APP_ERROR_MESSAGES = {
 		TITLE: "Failed to get your movies!",
 		ICON: TriangleAlert,
 	},
+	MOVIE: {
+		TITLE: "Failed to get your movie!",
+		ICON: TriangleAlert,
+	},
 };
 
 export const DEFAULT_ROLE = "USER";
+export const ADMIN_ROLE = "ADMIN";
 export const FETCH_MOVIE_LIMIT = 10;
 
 export const MENU_ELEMENTS = [

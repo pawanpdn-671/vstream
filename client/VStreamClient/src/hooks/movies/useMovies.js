@@ -19,7 +19,7 @@ export const useMovies = (filters = {}) => {
 			initialPageParam: 1,
 		});
 
-	const flatMovies = data?.pages.flatMap((page) => page.data) ?? [];
+	const flatMovies = Array.isArray(data?.pages) ? data.pages.flatMap((page) => page?.data ?? []) : [];
 	const errorMessage = isError ? parseError(error) : "";
 
 	return {

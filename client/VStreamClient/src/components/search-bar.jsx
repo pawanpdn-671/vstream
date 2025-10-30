@@ -1,22 +1,23 @@
-import React from "react";
-import { Input } from "./shared/input";
 import { Search } from "lucide-react";
+import { useState } from "react";
 import { Button } from "./shared/button";
+import GradientBorder from "./shared/gradient-border";
 
-const SearchBar = ({ handleChange, value, size = "lg", placeholder, noButton, onClick }) => {
-	const sizeOptions = {
-		lg: "h-[48px]",
-		md: "h-[40px]",
-		sm: "h-[36px]",
+const SearchBar = ({ handleSearch, placeholder, noButton }) => {
+	const [localQuery, setLocalQuery] = useState("");
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		handleSearch(localQuery);
 	};
 
 	return (
-		<div class={`p-[2px] ${sizeOptions[size]} rounded-full bg-linear-to-r from-red-300 to-orange-400`}>
-			<form onSubmit={onClick} class="rounded-full h-full bg-white px-1 flex items-center">
+		<GradientBorder radius="rounded-full">
+			<form onSubmit={handleSubmit} className="h-max flex items-center">
 				<input
-					value={value}
-					onChange={(e) => handleChange(e.target.value)}
-					className={`pl-4 rounded-3xl h-[40px] border-none outline-none text-sm flex-1`}
+					value={localQuery}
+					onChange={(e) => setLocalQuery(e.target.value)}
+					className={`pl-3 rounded-3xl border-none outline-none text-sm flex-1`}
 					placeholder={placeholder}
 				/>
 				{!noButton && (
@@ -25,7 +26,7 @@ const SearchBar = ({ handleChange, value, size = "lg", placeholder, noButton, on
 					</Button>
 				)}
 			</form>
-		</div>
+		</GradientBorder>
 	);
 };
 
