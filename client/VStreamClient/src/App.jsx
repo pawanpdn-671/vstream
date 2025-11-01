@@ -2,39 +2,56 @@ import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "./routes/private-route";
 import { adminRoutes, privateRoutes, publicRoutes } from "./routes/router";
 import PrivateLayout from "./layouts/private-layout";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import FallbackComponent from "./components/fallback-component";
 import NotFoundPage from "./pages/not-found";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminRoute from "./routes/admin-route";
+
+const renderRoutes = (routes) =>
+	routes.map(({ path, component: Component, children, index }, i) => {
+		if (index) {
+			return (
+				<Route
+					key={i}
+					index
+					element={
+						<Suspense fallback={<FallbackComponent />}>
+							<Component />
+						</Suspense>
+					}
+				/>
+			);
+		}
+		return (
+			<Route
+				key={i}
+				path={path}
+				element={
+					<Suspense fallback={<FallbackComponent />}>
+						<Component />
+					</Suspense>
+				}>
+				{children && renderRoutes(children)}
+			</Route>
+		);
+	});
 
 function App() {
 	return (
 		<Suspense fallback={<FallbackComponent />}>
 			<ScrollToTop />
 			<Routes>
-				{/* Public Routes */}
-				{publicRoutes.map(({ path, component: Page }) => (
-					<Route key={path} path={path} element={<Page />} />
-				))}
+				{renderRoutes(publicRoutes)}
 
-				{/* Private Routes (wrapped in PrivateRoute) */}
 				<Route element={<PrivateRoute />}>
-					<Route element={<PrivateLayout />}>
-						{privateRoutes.map(({ path, component: Page }) => (
-							<Route key={path} path={path} element={<Page />} />
-						))}
-					</Route>
+					<Route element={<PrivateLayout />}>{renderRoutes(privateRoutes)}</Route>
 				</Route>
+
 				<Route element={<AdminRoute />}>
-					<Route element={<PrivateLayout />}>
-						{adminRoutes.map(({ path, component: Page }) => (
-							<Route key={path} path={path} element={<Page />} />
-						))}
-					</Route>
+					<Route element={<PrivateLayout />}>{renderRoutes(adminRoutes)}</Route>
 				</Route>
-				{/* 404 fallback */}
-				<Route path={"*"} element={<NotFoundPage />} />
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</Suspense>
 	);

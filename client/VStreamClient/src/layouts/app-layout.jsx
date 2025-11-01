@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useProfile } from "@/hooks/auth/useProfile";
+import { useProfile } from "@/hooks/user/useProfile";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const AppLayout = ({ children }) => {

@@ -31,6 +31,16 @@ export const privateRoutes = [
 	{
 		path: "/settings",
 		component: lazy(() => import("@/pages/Settings")),
+		children: [
+			{
+				index: true,
+				component: lazy(() => import("@/pages/Settings/profile")),
+			},
+			{
+				path: "preferences",
+				component: lazy(() => import("@/pages/Settings/preferences")),
+			},
+		],
 	},
 	{
 		path: "/stream/:imdb_id",
@@ -42,5 +52,9 @@ export const adminRoutes = [
 	{
 		path: "/review/:id",
 		component: lazy(() => import("@/pages/Review")),
+	},
+	{
+		path: "/settings/manage-movies",
+		component: lazy(() => import("@/pages/Settings/manage-movies")),
 	},
 ];

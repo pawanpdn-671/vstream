@@ -1,4 +1,4 @@
-import { Clapperboard, TriangleAlert } from "lucide-react";
+import { Clapperboard, TriangleAlert, UserRoundCog } from "lucide-react";
 
 export const APP_EMPTY_MESSAGES = {
 	MOVIES: {
@@ -57,3 +57,20 @@ export const MENU_ELEMENTS = [
 			"A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
 	},
 ];
+
+export const SETTINGS_MENU_ITEMS = [
+	{
+		name: "Profile",
+		value: "profile",
+		icon: UserRoundCog,
+		path: "/settings",
+	},
+	{
+		name: "Preferences",
+		value: "preferences",
+		icon: UserRoundCog,
+		path: "/settings/preferences",
+	},
+];
+
+export const EXCLUDE_SEARCHBAR_ROUTES = ["/settings", "/stream"];

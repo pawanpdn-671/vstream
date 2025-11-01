@@ -9,7 +9,7 @@ import * as z from "zod";
 import { Button } from "../shared/button";
 import { Field, FieldGroup, FieldLabel } from "../shared/field";
 import { Input } from "../shared/input";
-import { useProfile } from "@/hooks/auth/useProfile";
+import { useProfile } from "@/hooks/user/useProfile";
 
 const loginSchema = z.object({
 	email: z.email("Invalid email address."),
