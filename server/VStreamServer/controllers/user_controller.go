@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -439,5 +440,64 @@ func UploadUserAvatar(client *mongo.Client) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Avatar uploaded successfully",
 		})
+	}
+}
+
+func GetUserAvatar(client *mongo.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(c, 10*time.Second)
+		defer cancel()
+
+		userId := c.Param("user_id")
+
+		userCollection := database.OpenCollection("users", client)
+		var user models.User
+
+		// Find the user
+		err := userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+
+		if user.AvatarURL == "" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "No avatar found"})
+			return
+		}
+
+		// Convert string to ObjectID
+		objID, err := bson.ObjectIDFromHex(user.AvatarURL)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid avatar ID"})
+			return
+		}
+
+		db := client.Database(os.Getenv("DATABASE_NAME"))
+		bucket := db.GridFSBucket()
+
+		// Open the file stream from GridFS
+		stream, err := bucket.OpenDownloadStream(ctx, objID)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not open avatar"})
+			return
+		}
+
+		defer stream.Close()
+
+		// Read the image bytes
+		var buf bytes.Buffer
+		_, err = io.Copy(&buf, stream)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read avatar"})
+			return
+		}
+
+		// Detect content type (optional but nice)
+		contentType := http.DetectContentType(buf.Bytes())
+
+		c.Header("Content-Type", contentType)
+		c.Writer.WriteHeader(http.StatusOK)
+		c.Writer.Write(buf.Bytes())
 	}
 }

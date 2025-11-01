@@ -3,7 +3,6 @@ import { Checkbox } from "@/components/shared/checkbox";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/shared/field";
 import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
-import { useUpdateProfile } from "@/hooks/auth/useUpdateProfile";
 import { useGenres } from "@/hooks/movies/useGenres";
 import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +14,7 @@ import { toSnakeCase } from "@/utils/case-convert";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import UserProfile from "@/components/settings/user-profile";
+import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
 
 const updateUserSchema = z.object({
 	firstName: z.string().min(1, "First name is required."),

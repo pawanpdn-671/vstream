@@ -22,4 +22,5 @@ func SetupProtectedRoutes(router *gin.Engine, client *mongo.Client) {
 	router.POST("/me/update", controllers.UpdateUser(client))
 	router.POST("/me/upload_avatar", controllers.UploadUserAvatar(client))
 	router.POST("/me/change_password", controllers.UpdatePassword(client))
+	router.GET("/users/:user_id/avatar", controllers.GetUserAvatar(client))
 }
