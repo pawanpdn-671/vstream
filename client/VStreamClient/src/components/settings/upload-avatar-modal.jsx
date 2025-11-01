@@ -1,5 +1,5 @@
 import { getCroppedImg } from "@/lib/cropImage";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Cropper from "react-easy-crop";
 import { Button } from "../shared/button";
@@ -10,7 +10,7 @@ import { useUploadAvatar } from "@/hooks/user/useUploadAvatar";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-const UploadAvatarModal = ({ openModal, onClose }) => {
+const UploadAvatarModal = ({ openModal, onClose, onUploadSuccess }) => {
 	const [imageSrc, setImageSrc] = useState(null);
 	const [crop, setCrop] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
@@ -56,6 +56,17 @@ const UploadAvatarModal = ({ openModal, onClose }) => {
 		}
 	}, [imageSrc, croppedAreaPixels]);
 
+	useEffect(() => {
+		if (!openModal) {
+			setImageSrc(null);
+			setCrop({ x: 0, y: 0 });
+			setZoom(1);
+			setCroppedAreaPixels(null);
+			setCroppedImage(null);
+			setFileBlob(null);
+		}
+	}, [openModal]);
+
 	const handleSave = async () => {
 		if (!fileBlob) return;
 
@@ -65,10 +76,11 @@ const UploadAvatarModal = ({ openModal, onClose }) => {
 		uploadAvatar(formData, {
 			onSuccess: () => {
 				onClose();
+				queryClient.invalidateQueries({ queryKey: ["profile"] });
 				toast.success("Profile Upload Successful!", {
 					className: "bg-gradient",
 				});
-				queryClient.invalidateQueries({ queryKey: ["profile"] });
+				if (onUploadSuccess) onUploadSuccess();
 			},
 		});
 	};
@@ -83,8 +95,8 @@ const UploadAvatarModal = ({ openModal, onClose }) => {
 				{!imageSrc ? (
 					<div
 						{...getRootProps()}
-						className={`h-[120px] border-2 flex items-center justify-center border-dashed rounded-md p-6 cursor-pointer transition ${
-							isDragActive ? "border-orange-500 bg-blue-50" : "border-gray-300"
+						className={`mt-5 h-[150px] border-2 flex items-center justify-center border-dashed rounded-md p-6 cursor-pointer transition ${
+							isDragActive ? "border-primary" : "border"
 						}`}>
 						<Input {...getInputProps()} />
 						<p className="text-base text-muted-foreground">Drag & drop your image here, or click to select</p>
@@ -125,19 +137,21 @@ const UploadAvatarModal = ({ openModal, onClose }) => {
 						/>
 
 						<div className="flex gap-3 mt-8">
-							<Button onClick={showCroppedImage}>Crop</Button>
 							<Button onClick={() => setImageSrc(null)} variant="outline">
 								Choose Another
 							</Button>
+							<Button onClick={showCroppedImage}>Crop</Button>
 						</div>
 					</div>
 				)}
 
 				{croppedImage && (
 					<div className="flex justify-center gap-3 mt-8">
-						<Button onClick={handleSave}>Save</Button>
-						<Button onClick={() => setCroppedImage(null)} variant={"outline"}>
+						<Button onClick={() => setCroppedImage(null)} variant={"outline"} disabled={isPending}>
 							Re-Crop
+						</Button>
+						<Button onClick={handleSave} disabled={isPending}>
+							Save
 						</Button>
 					</div>
 				)}

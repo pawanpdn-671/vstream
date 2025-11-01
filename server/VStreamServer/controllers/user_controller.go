@@ -496,6 +496,7 @@ func GetUserAvatar(client *mongo.Client) gin.HandlerFunc {
 		// Detect content type (optional but nice)
 		contentType := http.DetectContentType(buf.Bytes())
 
+		c.Header("Cache-Control", "no-store")
 		c.Header("Content-Type", contentType)
 		c.Writer.WriteHeader(http.StatusOK)
 		c.Writer.Write(buf.Bytes())
