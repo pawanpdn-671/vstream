@@ -1,12 +1,11 @@
+import UserLogoutModal from "@/components/settings/user-logout-modal";
 import { Button } from "@/components/shared/button";
 import PageWrapper from "@/components/shared/page-wrapper";
 import TitleWithLine from "@/components/shared/title-with-line";
 import { authApi } from "@/service/authApi";
-import { userApi } from "@/service/userApi";
 import { SETTINGS_MENU_ITEMS } from "@/utils/constants";
 import { parseError } from "@/utils/parse-error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -39,10 +38,7 @@ const SettingsPage = () => {
 								</Link>
 							</Button>
 						))}
-						<Button className={"justify-start"} variant="outline" onClick={logoutUser}>
-							<LogOut size={20} />
-							Logout
-						</Button>
+						<UserLogoutModal logoutUser={logoutUser} />
 					</div>
 					<div className="flex-1 pl-10 pb-20">
 						<Outlet />
