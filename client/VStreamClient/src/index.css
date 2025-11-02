@@ -152,10 +152,6 @@
 	.text-gradient:hover {
 		background-image: var(--primary-gradient-hover);
 	}
-	.border-primary {
-		border-image: var(--primary-gradient) 1;
-		border-color: transparent !important;
-	}
 }
 
 @keyframes slide {

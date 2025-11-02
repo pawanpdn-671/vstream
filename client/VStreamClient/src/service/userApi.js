@@ -7,4 +7,5 @@ export const userApi = {
 		api.post("/me/upload_avatar", payload, {
 			headers: { "Content-Type": "multipart/form-data" },
 		}),
+	changePassword: (payload) => api.post("/me/change_password", payload),
 };

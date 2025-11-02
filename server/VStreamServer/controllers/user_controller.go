@@ -325,7 +325,7 @@ func UpdatePassword(client *mongo.Client) gin.HandlerFunc {
 
 		// Check old password
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Old password is incorrect"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Old password is incorrect"})
 			return
 		}
 

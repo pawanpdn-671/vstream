@@ -95,8 +95,8 @@ const UploadAvatarModal = ({ openModal, onClose, onUploadSuccess }) => {
 				{!imageSrc ? (
 					<div
 						{...getRootProps()}
-						className={`mt-5 h-[150px] border-2 flex items-center justify-center border-dashed rounded-md p-6 cursor-pointer transition ${
-							isDragActive ? "border-primary" : "border"
+						className={`mt-5 h-[150px] border-2 flex items-center justify-center border-dashed rounded-md p-6 cursor-pointer transition border-orange-400 ${
+							isDragActive ? "border-primary bg-orange-100" : ""
 						}`}>
 						<Input {...getInputProps()} />
 						<p className="text-base text-muted-foreground">Drag & drop your image here, or click to select</p>

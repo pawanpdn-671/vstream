@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import UserProfile from "@/components/settings/user-profile";
 import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
+import ChangePasswordModal from "@/components/settings/change-password-modal";
 
 const updateUserSchema = z.object({
 	firstName: z.string().min(1, "First name is required."),
@@ -26,7 +27,7 @@ const updateUserSchema = z.object({
 const ProfileSettingsPage = () => {
 	const { genres, isLoading } = useGenres();
 	const { user } = useAuthStore();
-	const { updateUser, isPending, isSuccess, errorMessage } = useUpdateProfile();
+	const { updateUser, isPending, errorMessage } = useUpdateProfile();
 	const queryClient = useQueryClient();
 
 	const { handleSubmit, control, reset } = useForm({
@@ -72,6 +73,9 @@ const ProfileSettingsPage = () => {
 	return (
 		<div className="w-full">
 			<div className="mx-auto">
+				<div className="flex justify-end">
+					<ChangePasswordModal />
+				</div>
 				<div className="flex justify-center pb-8">
 					<UserProfile />
 				</div>
@@ -154,12 +158,12 @@ const ProfileSettingsPage = () => {
 							)}
 						/>
 					</FieldGroup>
-					<Field className={"mt-10 items-center flex justify-center"} orientation="horizontal">
-						<Button type="submit" form="update-user-form">
-							Submit
-						</Button>
+					<Field className={"mt-20 items-center flex justify-center"} orientation="horizontal">
 						<Button type="button" variant="outline" onClick={() => reset()}>
 							Cancel
+						</Button>
+						<Button type="submit" form="update-user-form">
+							Submit
 						</Button>
 					</Field>
 				</form>
