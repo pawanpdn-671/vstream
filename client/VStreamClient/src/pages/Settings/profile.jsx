@@ -61,6 +61,7 @@ const ProfileSettingsPage = () => {
 					className: "bg-gradient",
 				});
 				queryClient.invalidateQueries({ queryKey: ["profile"] });
+				queryClient.invalidateQueries({ queryKey: ["recommended-movies"] });
 			},
 			onError: (error) => {
 				toast.error("User update failed", {

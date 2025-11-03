@@ -7,4 +7,5 @@ export const movieApi = {
 	getGenres: () => api.get("/genres"),
 	getRecommendedMovies: ({ pageParam, limit }) =>
 		api.get("/recommended_movies", { params: { page: pageParam, limit } }),
+	getUserStoryBasedMovies: (payload) => api.post("/movie/user_story/wai", payload),
 };

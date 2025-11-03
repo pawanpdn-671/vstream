@@ -1,0 +1,14 @@
+package user
+
+import (
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+)
+
+func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
+	router.GET("/me", GetCurrentUser(client))
+	router.POST("/me/update", UpdateUser(client))
+	router.POST("/me/upload_avatar", UploadUserAvatar(client))
+	router.POST("/me/change_password", UpdatePassword(client))
+	router.GET("/users/:user_id/avatar", GetUserAvatar(client))
+}

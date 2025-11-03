@@ -22,7 +22,7 @@ const NavigationBar = () => {
 	}, []);
 
 	return (
-		<div className={`fixed z-50 w-full`}>
+		<div className={`fixed z-50 w-full ${isScrolled ? "bg-transparent" : "bg-background"}`}>
 			<div className="max-w-7xl top-0 mx-auto px-5 pt-2">
 				<div
 					className={`flex items-center justify-between transition-all duration-300
@@ -48,7 +48,7 @@ const NavigationBar = () => {
 							Recommended Movies
 						</Link>
 
-						<Link to="/recommended-movies" className="text-sm text-gradient">
+						<Link to="/get-your-movie" className="text-sm text-gradient">
 							Get Movie
 						</Link>
 						<ProfileMenu />
