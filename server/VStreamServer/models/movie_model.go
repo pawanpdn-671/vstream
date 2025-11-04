@@ -22,6 +22,6 @@ type Movie struct {
 	YoutubeID   string        `bson:"youtube_id" json:"youtube_id" validate:"required"`
 	Genre       []Genre       `bson:"genre" json:"genre" validate:"required,dive"`
 	AdminReview string        `bson:"admin_review" json:"admin_review"`
-	Ranking     Ranking       `bson:"ranking" json:"ranking" validate:"required"`
+	Ranking     Ranking       `bson:"ranking" json:"ranking"`
 	Plot        string        `bson:"plot" json:"plot" validate:"required"`
 }
