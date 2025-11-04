@@ -1,21 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "../shared/card";
 import { Badge } from "../shared/badge";
 import { Link } from "react-router-dom";
 import { useMovieStore } from "@/store/useMovieStore";
 import { Bookmark } from "lucide-react";
 import { Button } from "../shared/button";
+import { useToggleBookmark } from "@/hooks/user/useToggleBookmark";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const Movie = ({ movie }) => {
 	const { setSelectedMovie } = useMovieStore();
 	const [showBookmarkMsg, setShowBookmarkMsg] = useState(false);
+	const { toggleBookmark, isPending } = useToggleBookmark();
+	const messageTimerRef = useRef(null);
+	const queryClient = useQueryClient();
+	const { isBookmarked } = useAuthStore();
+	const bookmarked = isBookmarked(movie?._id);
 
 	const handleBookmarkClick = (e) => {
 		e.stopPropagation();
-		setShowBookmarkMsg(true);
 
-		setTimeout(() => setShowBookmarkMsg(false), 2000);
+		if (messageTimerRef.current) {
+			clearTimeout(messageTimerRef.current);
+		}
+
+		toggleBookmark(
+			{ id: movie._id },
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries({ queryKey: ["profile"] });
+					setShowBookmarkMsg(true);
+					messageTimerRef.current = setTimeout(() => {
+						setShowBookmarkMsg(false);
+					}, 1000);
+				},
+			},
+		);
 	};
+
+	useEffect(() => {
+		return () => {
+			if (messageTimerRef.current) {
+				clearTimeout(messageTimerRef.current);
+			}
+		};
+	}, []);
 
 	return (
 		<div className="relative group rounded-md overflow-hidden min-h-[300px] w-full">
@@ -60,12 +90,12 @@ const Movie = ({ movie }) => {
 				onClick={handleBookmarkClick}>
 				<span
 					className={`absolute w-max text-white pr-2 -translate-y-1/2 text-sm top-1/2 left-0 font-medium transition-all duration-500 ease-in-out
-						${showBookmarkMsg ? "opacity-100 -translate-x-full" : "opacity-0 -translate-x-1/2"}
+						${showBookmarkMsg ? "opacity-100 -translate-x-full" : "opacity-0 -translate-x-3/4"}
 					`}>
-					Bookmark Added
+					{bookmarked ? "Bookmark Added" : "Bookmark Removed"}
 				</span>
 
-				<Bookmark size={28} className="text-white" />
+				<Bookmark size={28} className={`${bookmarked ? "text-red-500 fill-orange-400" : "text-white"}`} />
 			</div>
 		</div>
 	);

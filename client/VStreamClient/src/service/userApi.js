@@ -8,4 +8,6 @@ export const userApi = {
 			headers: { "Content-Type": "multipart/form-data" },
 		}),
 	changePassword: (payload) => api.post("/me/change_password", payload),
+	getBookmarkedMovies: () => api.get("/me/bookmarked_movies"),
+	toggleBookmarkMovie: ({ id }) => api.post(`/bookmark/${id}`),
 };

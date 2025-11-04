@@ -14,4 +14,8 @@ export const useAuthStore = create((set) => ({
 		}),
 
 	setLoading: (state) => set({ isLoading: state }),
+	isBookmarked: (movieId) => {
+		const state = useAuthStore.getState();
+		return state.user?.bookmarked_movie_ids?.includes(movieId) ?? false;
+	},
 }));

@@ -147,3 +147,65 @@ func UpdatePassword(client *mongo.Client) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 	}
 }
+
+func ToggleBookmarkMovie(client *mongo.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		// Get the user ID from JWT or context middleware
+		userId, err := utils.GetUserIdFromContext(c)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found or unauthorized."})
+			return
+		}
+
+		// Get movie ID from route parameter
+		movieId := c.Param("movieId")
+		if movieId == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Movie ID is required."})
+			return
+		}
+
+		userCollection := database.OpenCollection("users", client)
+
+		// Fetch user document
+		var user models.User
+		err = userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found."})
+			return
+		}
+
+		// Check if the movie is already bookmarked
+		isBookmarked := false
+		for _, id := range user.BookmarkedMovieIDs {
+			if id == movieId {
+				isBookmarked = true
+				break
+			}
+		}
+
+		var update bson.M
+		var message string
+
+		if isBookmarked {
+			// Remove (unbookmark)
+			update = bson.M{"$pull": bson.M{"bookmarked_movie_ids": movieId}}
+			message = "Movie removed from bookmarks."
+		} else {
+			// Add (bookmark)
+			update = bson.M{"$addToSet": bson.M{"bookmarked_movie_ids": movieId}}
+			message = "Movie added to bookmarks."
+		}
+
+		// Update user document
+		_, err = userCollection.UpdateOne(ctx, bson.M{"user_id": userId}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update bookmarks."})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": message})
+	}
+}

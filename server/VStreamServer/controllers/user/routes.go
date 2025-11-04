@@ -7,8 +7,10 @@ import (
 
 func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
 	router.GET("/me", GetCurrentUser(client))
+	router.GET("/users/:user_id/avatar", GetUserAvatar(client))
+	router.GET("/me/bookmarked_movies", GetBookmarkedMovies(client))
 	router.POST("/me/update", UpdateUser(client))
 	router.POST("/me/upload_avatar", UploadUserAvatar(client))
 	router.POST("/me/change_password", UpdatePassword(client))
-	router.GET("/users/:user_id/avatar", GetUserAvatar(client))
+	router.POST("/bookmark/:movieId", ToggleBookmarkMovie(client))
 }
