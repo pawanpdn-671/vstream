@@ -79,8 +79,6 @@ GetMoviePage.Skeleton = function ProcessedResultPendingSkeleton() {
 		<div className="flex gap-4 flex-wrap">
 			<Skeleton className={"w-[280px] h-[400px]"} />
 			<Skeleton className={"w-[280px] h-[400px]"} />
-			<Skeleton className={"w-[280px] h-[400px]"} />
-			<Skeleton className={"w-[280px] h-[400px]"} />
 		</div>
 	);
 };
