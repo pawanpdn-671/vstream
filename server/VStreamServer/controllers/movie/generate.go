@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -28,6 +29,11 @@ type YouTubeSearchResponse struct {
 			VideoID string `json:"videoId"`
 		} `json:"id"`
 	} `json:"items"`
+}
+
+type Genre struct {
+	GenreID   int    `json:"genre_id"`
+	GenreName string `json:"genre_name"`
 }
 
 func GetYouTubeVideoID(c *gin.Context, title string) (interface{}, error) {
@@ -183,6 +189,19 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 			return
 		}
+		genrePath := filepath.Join("data", "genres.json")
+		genreBytes, err := os.ReadFile(genrePath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read genres.json"})
+			return
+		}
+
+		var genres []Genre
+
+		if err := json.Unmarshal(genreBytes, &genres); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to parse genres.json"})
+			return
+		}
 
 		groqApiKey := os.Getenv("GROQ_API_KEY")
 
@@ -202,6 +221,7 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		base_prompt_template := os.Getenv("GET_MOVIE_PROMPT_TEMPLATE")
+		genreJSON, _ := json.MarshalIndent(genres, "", "  ")
 		prompt := fmt.Sprintf(`%v
 		Example:
 		[
@@ -211,10 +231,17 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 			"genre": "[{ genre_name: "string", genre_id: "int"}]"
 			}
 		]
+
+		RULES:
+		- Genres MUST ONLY come from this list.
+		- genre_name and genre_id must match exactly.
+
+		Allowed genres:
+		%s
 		
 		User story:
 		%s
-		`, base_prompt_template, req.Story)
+		`, base_prompt_template, string(genreJSON), req.Story)
 
 		response, err := llm.Call(c, prompt)
 		if err != nil {
