@@ -1,10 +1,14 @@
-import { Clapperboard, TriangleAlert, UserRoundCog } from "lucide-react";
+import { Clapperboard, LayoutDashboard, TriangleAlert, UserRoundCog } from "lucide-react";
 
 export const APP_EMPTY_MESSAGES = {
 	MOVIES: {
 		TITLE: "No Movies Found",
 		ICON: Clapperboard,
 		DESCRIPTION: "Opps, It seems like there are no movies. Get started by creating your own movie.",
+	},
+	GROQ_RESPONSE: {
+		TITLE: "No Movie Exist with the Story Provided",
+		ICON: Clapperboard,
 	},
 };
 
@@ -17,6 +21,15 @@ export const APP_ERROR_MESSAGES = {
 		TITLE: "Failed to get your movie!",
 		ICON: TriangleAlert,
 	},
+	GROQ_RESPONSE: {
+		TITLE: "Failed to get the movies. Please try again.",
+		ICON: TriangleAlert,
+	},
+};
+
+export const PAGE_TITLE = {
+	BOOKMARK: "Bookmarked Movies",
+	GET_MOVIE: "Get Movies With Text Prompt",
 };
 
 export const DEFAULT_ROLE = "USER";
@@ -66,10 +79,10 @@ export const SETTINGS_MENU_ITEMS = [
 		path: "/settings",
 	},
 	{
-		name: "Preferences",
-		value: "preferences",
-		icon: UserRoundCog,
-		path: "/settings/preferences",
+		name: "Manage Movies",
+		value: "manage_movies",
+		icon: LayoutDashboard,
+		path: "/settings/manage-movies",
 	},
 ];
 

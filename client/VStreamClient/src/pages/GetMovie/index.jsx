@@ -5,7 +5,9 @@ import PageWrapper from "@/components/shared/page-wrapper";
 import { Skeleton } from "@/components/shared/skeleton";
 import { Spinner } from "@/components/shared/spinner";
 import { Textarea } from "@/components/shared/textarea";
+import TitleWithLine from "@/components/shared/title-with-line";
 import { movieApi } from "@/service/movieApi";
+import { PAGE_TITLE } from "@/utils/constants";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
@@ -13,13 +15,14 @@ import { toast } from "sonner";
 
 const GetMoviePage = () => {
 	const [userStoryText, setUserStoryText] = useState("");
+	const [showProcessedResult, setShowProcessedResult] = useState(false);
 	const {
 		mutate: getUserStoryBasedMovies,
 		data,
 		error,
 		isPending,
-		isSuccess,
 		isError,
+		isIdle,
 	} = useMutation({
 		queryKey: ["user-story-movies"],
 		mutationFn: movieApi.getUserStoryBasedMovies,
@@ -35,11 +38,18 @@ const GetMoviePage = () => {
 			return;
 		}
 
-		getUserStoryBasedMovies({ story: userStoryText });
+		getUserStoryBasedMovies(
+			{ story: userStoryText },
+			{
+				onSuccess: () => setShowProcessedResult(true),
+				onError: () => setShowProcessedResult(true),
+			},
+		);
 	};
 
 	return (
 		<PageWrapper>
+			<TitleWithLine title={PAGE_TITLE.GET_MOVIE} includeLine />
 			<div className="pt-10">
 				<div className="flex gap-10">
 					<div className="shrink-0">
@@ -50,7 +60,7 @@ const GetMoviePage = () => {
 								value={userStoryText}
 								onChange={(e) => setUserStoryText(e.target.value)}
 								placeholder="Type your story here."
-								className={"mt-2 resize-none max-h-[200px] overflow-y-auto"}
+								className={"mt-2 resize-none min-h-[150px] max-h-[200px] overflow-y-auto"}
 							/>
 							<div className="mt-5 flex justify-end gap-2">
 								<Button disabled={isPending} variant="ghost" onClick={() => setUserStoryText("")}>
@@ -64,7 +74,13 @@ const GetMoviePage = () => {
 						</div>
 					</div>
 					<div className="flex-1">
-						{isPending ? <GetMoviePage.Skeleton /> : <ProcessedMoviesFeed movies={data} />}
+						{isPending ? (
+							<GetMoviePage.Skeleton />
+						) : showProcessedResult ? (
+							<ProcessedMoviesFeed movies={data?.movies} isError={isError} error={error} />
+						) : (
+							<></>
+						)}
 					</div>
 				</div>
 			</div>

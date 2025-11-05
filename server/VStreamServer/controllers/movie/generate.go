@@ -1,6 +1,7 @@
 package movie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -36,19 +37,28 @@ type Genre struct {
 	GenreName string `json:"genre_name"`
 }
 
-func GetYouTubeVideoID(c *gin.Context, title string) (interface{}, error) {
+// FIXED: Removed c.JSON calls, only return data and error
+func GetYouTubeVideoID(ctx context.Context, title string) (string, error) {
 	apiKey := os.Getenv("YOUTUBE_API_KEY")
 	if apiKey == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "missing youtube API config"})
-		return nil, fmt.Errorf("missing youtube API config")
+		return "", fmt.Errorf("missing youtube API config")
 	}
-	baseURL := "https://www.googleapis.com/youtube/v3/search"
 
+	baseURL := "https://www.googleapis.com/youtube/v3/search"
 	query := url.QueryEscape(fmt.Sprintf("%s trailer", title))
 	requestURL := fmt.Sprintf("%s?part=snippet&type=video&maxResults=1&q=%s&key=%s",
 		baseURL, query, apiKey)
 
-	resp, err := http.Get(requestURL)
+	// Add timeout context
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", requestURL, nil)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -66,24 +76,26 @@ func GetYouTubeVideoID(c *gin.Context, title string) (interface{}, error) {
 	return result.Items[0].ID.VideoID, nil
 }
 
-func GetMovieByTitle(c *gin.Context, title string) (interface{}, error) {
+// FIXED: Removed c.JSON calls, only return data and error
+func GetMovieByTitle(ctx context.Context, title string) (map[string]interface{}, error) {
 	if title == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "movie title is required"})
 		return nil, fmt.Errorf("missing title")
 	}
 
 	collectURL := os.Getenv("COLLECT_BASE_URL")
 	apiKey := os.Getenv("COLLECT_API_KEY")
 	if collectURL == "" || apiKey == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "missing collect API config"})
 		return nil, fmt.Errorf("missing collect API config")
 	}
 
 	fullURL := strings.Replace(collectURL, "{title}", url.QueryEscape(title), 1)
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	// Add timeout context
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", fullURL, nil)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create request"})
 		return nil, err
 	}
 
@@ -92,14 +104,12 @@ func GetMovieByTitle(c *gin.Context, title string) (interface{}, error) {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to send request"})
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read response"})
 		return nil, err
 	}
 
@@ -109,10 +119,6 @@ func GetMovieByTitle(c *gin.Context, title string) (interface{}, error) {
 	}
 
 	if err := json.Unmarshal(body, &parsed); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"raw":     string(body),
-			"warning": "failed to parse JSON response",
-		})
 		return nil, fmt.Errorf("failed to parse JSON: %v", err)
 	}
 
@@ -135,38 +141,44 @@ func GetMovieByTitle(c *gin.Context, title string) (interface{}, error) {
 		}
 	}
 
-	if movie["poster"] == "" || movie["imdb_id"] == "" {
+	// Fallback to OMDb if needed
+	if movie["poster_path"] == "" || movie["imdb_id"] == "" {
 		omdbAPIKey := os.Getenv("OMDB_API_KEY")
 		if omdbAPIKey != "" {
 			omdbURL := fmt.Sprintf("http://www.omdbapi.com/?apikey=%s&t=%s", omdbAPIKey, url.QueryEscape(title))
-			resp, err := http.Get(omdbURL)
-			if err != nil {
-				log.Printf("OMDb request failed for '%s': %v", title, err)
-			} else {
-				defer resp.Body.Close()
 
-				if resp.StatusCode == http.StatusOK {
-					var omdbData map[string]interface{}
-					if err := json.NewDecoder(resp.Body).Decode(&omdbData); err != nil {
-						log.Printf("Failed to parse OMDb JSON for '%s': %v", title, err)
-					} else {
-						if responseVal, ok := omdbData["Response"].(string); ok && strings.EqualFold(responseVal, "False") {
-							log.Printf("OMDb API returned error for '%s': %v", title, omdbData["Error"])
+			omdbCtx, omdbCancel := context.WithTimeout(ctx, 10*time.Second)
+			defer omdbCancel()
+
+			omdbReq, err := http.NewRequestWithContext(omdbCtx, "GET", omdbURL, nil)
+			if err != nil {
+				log.Printf("Failed to create OMDb request for '%s': %v", title, err)
+			} else {
+				resp, err := http.DefaultClient.Do(omdbReq)
+				if err != nil {
+					log.Printf("OMDb request failed for '%s': %v", title, err)
+				} else {
+					defer resp.Body.Close()
+
+					if resp.StatusCode == http.StatusOK {
+						var omdbData map[string]interface{}
+						if err := json.NewDecoder(resp.Body).Decode(&omdbData); err != nil {
+							log.Printf("Failed to parse OMDb JSON for '%s': %v", title, err)
 						} else {
-							if poster, ok := omdbData["Poster"].(string); ok && poster != "N/A" {
-								movie["poster_path"] = poster
-							}
-							if imdbID, ok := omdbData["imdbID"].(string); ok && imdbID != "N/A" {
-								movie["imdb_id"] = imdbID
+							if responseVal, ok := omdbData["Response"].(string); ok && strings.EqualFold(responseVal, "False") {
+								log.Printf("OMDb API returned error for '%s': %v", title, omdbData["Error"])
+							} else {
+								if poster, ok := omdbData["Poster"].(string); ok && poster != "N/A" {
+									movie["poster_path"] = poster
+								}
+								if imdbID, ok := omdbData["imdbID"].(string); ok && imdbID != "N/A" {
+									movie["imdb_id"] = imdbID
+								}
 							}
 						}
 					}
-				} else {
-					log.Printf("OMDb API HTTP error for '%s': %d", title, resp.StatusCode)
 				}
 			}
-		} else {
-			log.Println("Warning: OMDB_API_KEY missing — cannot fetch OMDb fallback")
 		}
 	}
 
@@ -175,7 +187,6 @@ func GetMovieByTitle(c *gin.Context, title string) (interface{}, error) {
 
 func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		err := godotenv.Load(".env")
 		if err != nil {
 			log.Println("Warning: .env file is missing")
@@ -189,6 +200,7 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 			return
 		}
+
 		genrePath := filepath.Join("data", "genres.json")
 		genreBytes, err := os.ReadFile(genrePath)
 		if err != nil {
@@ -197,14 +209,12 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		var genres []Genre
-
 		if err := json.Unmarshal(genreBytes, &genres); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to parse genres.json"})
 			return
 		}
 
 		groqApiKey := os.Getenv("GROQ_API_KEY")
-
 		if groqApiKey == "" {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "api key is missing"})
 			return
@@ -263,89 +273,130 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
+		// FIXED: Use rate limiter that doesn't block unnecessarily
+		ticker := time.NewTicker(1 * time.Second)
+		defer ticker.Stop()
+
 		var mergedMovies []interface{}
 
-		for _, movie := range movies {
+		for i, movie := range movies {
+			// Rate limit: wait only after the first request
+			if i > 0 {
+				<-ticker.C
+			}
+
 			title, ok := movie["title"].(string)
 			if !ok || title == "" {
 				continue
 			}
-			var movieRateLimiter = time.Tick(1 * time.Second)
-			<-movieRateLimiter
-			// Rate-limited call: 1 request per second
-			movieData, err := GetMovieByTitle(c, title)
+
+			// FIXED: Pass context instead of gin.Context
+			movieData, err := GetMovieByTitle(c.Request.Context(), title)
 			if err != nil {
 				log.Printf("Failed to fetch movie for title %s: %v", title, err)
+				// Skip this movie if we can't get basic data
 				continue
 			}
 
-			apiMovie, ok := movieData.(map[string]interface{})
-			if !ok {
+			// Check if we got valid movie data (must have imdb_id)
+			imdbID, _ := movieData["imdb_id"].(string)
+			if imdbID == "" {
+				log.Printf("Skipping movie '%s': no IMDB ID found", title)
 				continue
 			}
-			var youtubeRateLimiter = time.Tick(1 * time.Second)
-			<-youtubeRateLimiter
-			youtubeID, err := GetYouTubeVideoID(c, title)
 
+			// Get YouTube ID (required - skip if not found)
+			youtubeID, err := GetYouTubeVideoID(c.Request.Context(), title)
 			if err != nil {
-				log.Printf("Failed to get YouTube video for %s: %v", title, err)
-				apiMovie["youtube_id"] = ""
-			} else {
-				apiMovie["youtube_id"] = youtubeID
-			}
-
-			apiMovie["plot"] = movie["plot"]
-			apiMovie["genre"] = movie["genre"]
-
-			mergedMovies = append(mergedMovies, apiMovie)
-		}
-		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
-
-		for _, m := range mergedMovies {
-			movieMap, ok := m.(map[string]interface{})
-			if !ok {
+				log.Printf("Skipping movie '%s': failed to get YouTube video - %v", title, err)
 				continue
 			}
 
-			var genres []models.Genre
-			if rawGenres, ok := movieMap["genre"].([]interface{}); ok {
-				for _, g := range rawGenres {
-					if gm, ok := g.(map[string]interface{}); ok {
-						genre := models.Genre{}
-						if name, ok := gm["genre_name"].(string); ok {
-							genre.GenreName = name
+			// Validate YouTube ID is not empty
+			if youtubeID == "" {
+				log.Printf("Skipping movie '%s': invalid or empty YouTube ID", title)
+				continue
+			}
+
+			movieData["youtube_id"] = youtubeID
+			movieData["plot"] = movie["plot"]
+			movieData["genre"] = movie["genre"]
+
+			mergedMovies = append(mergedMovies, movieData)
+		}
+
+		// FIXED: Save to database asynchronously, don't block response
+		go func() {
+			movieCollection := database.OpenCollection("movies", client)
+			ctx := context.Background()
+
+			for _, m := range mergedMovies {
+				movieMap, ok := m.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				var genres []models.Genre
+				if rawGenres, ok := movieMap["genre"].([]interface{}); ok {
+					for _, g := range rawGenres {
+						if gm, ok := g.(map[string]interface{}); ok {
+							genre := models.Genre{}
+							if name, ok := gm["genre_name"].(string); ok {
+								genre.GenreName = name
+							}
+							if id, ok := gm["genre_id"].(float64); ok {
+								genre.GenreID = int(id)
+							}
+							genres = append(genres, genre)
 						}
-						if id, ok := gm["genre_id"].(float64); ok {
-							genre.GenreID = int(id)
-						}
-						genres = append(genres, genre)
 					}
 				}
-			}
 
-			movie := models.Movie{
-				ImdbID:     utils.GetString(movieMap, "imdb_id"),
-				Title:      utils.GetString(movieMap, "title"),
-				PosterPath: utils.GetString(movieMap, "poster_path"),
-				YoutubeID:  utils.GetString(movieMap, "youtube_id"),
-				Genre:      genres,
-				Plot:       utils.GetString(movieMap, "plot"),
-			}
+				movie := models.Movie{
+					ImdbID:     utils.GetString(movieMap, "imdb_id"),
+					Title:      utils.GetString(movieMap, "title"),
+					PosterPath: utils.GetString(movieMap, "poster_path"),
+					YoutubeID:  utils.GetString(movieMap, "youtube_id"),
+					Genre:      genres,
+					Plot:       utils.GetString(movieMap, "plot"),
+				}
 
-			var existing models.Movie
-			err := movieCollection.FindOne(c, bson.M{"imdb_id": movie.ImdbID}).Decode(&existing)
-			if err == nil {
-				log.Printf("Skipping existing movie: %s (%s)", movie.Title, movie.ImdbID)
-				continue
-			}
+				// Skip if no IMDB ID (invalid movie data)
+				if movie.ImdbID == "" {
+					log.Printf("Skipping movie with no IMDB ID: %s", movie.Title)
+					continue
+				}
 
-			_, err = movieCollection.InsertOne(c, movie)
-			if err != nil {
-				log.Printf("Failed to insert movie '%s': %v", movie.Title, err)
-				continue
-			}
-		}
+				// Skip if no YouTube ID (invalid movie data)
+				if movie.YoutubeID == "" {
+					log.Printf("Skipping movie with no YouTube ID: %s", movie.Title)
+					continue
+				}
 
-		c.JSON(http.StatusOK, mergedMovies)
+				// Check for existing movie by IMDB ID OR title
+				var existing models.Movie
+				filter := bson.M{
+					"$or": []bson.M{
+						{"imdb_id": movie.ImdbID},
+						{"title": movie.Title},
+					},
+				}
+				err := movieCollection.FindOne(ctx, filter).Decode(&existing)
+				if err == nil {
+					log.Printf("Skipping existing movie: %s (%s)", movie.Title, movie.ImdbID)
+					continue
+				}
+
+				_, err = movieCollection.InsertOne(ctx, movie)
+				if err != nil {
+					log.Printf("Failed to insert movie '%s': %v", movie.Title, err)
+				}
+			}
+		}()
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"movies":  mergedMovies,
+		})
 	}
 }

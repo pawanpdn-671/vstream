@@ -37,6 +37,14 @@ const renderRoutes = (routes) =>
 		);
 	});
 
+export const ProtectedAdminRouteWrapper = ({ Component }) => (
+	<AdminRoute>
+		<Suspense fallback={<FallbackComponent />}>
+			<Component />
+		</Suspense>
+	</AdminRoute>
+);
+
 function App() {
 	return (
 		<Suspense fallback={<FallbackComponent />}>

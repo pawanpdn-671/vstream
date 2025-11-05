@@ -37,8 +37,8 @@ export const privateRoutes = [
 				component: lazy(() => import("@/pages/Settings/profile")),
 			},
 			{
-				path: "preferences",
-				component: lazy(() => import("@/pages/Settings/preferences")),
+				path: "manage-movies",
+				component: lazy(() => import("@/pages/Settings/manage-movies")),
 			},
 		],
 	},
@@ -56,9 +56,5 @@ export const adminRoutes = [
 	{
 		path: "/review/:id",
 		component: lazy(() => import("@/pages/Review")),
-	},
-	{
-		path: "/settings/manage-movies",
-		component: lazy(() => import("@/pages/Settings/manage-movies")),
 	},
 ];

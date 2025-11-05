@@ -154,7 +154,7 @@ export function RegisterForm() {
 							<FieldLabel>Favourite Genres</FieldLabel>
 							<FieldDescription>Select your favourite genres below:</FieldDescription>
 
-							<div className="mt-2 flex flex-wrap gap-4">
+							<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border">
 								{isLoading && <RegisterPage.GenreSkeleton />}
 								{!isLoading && genres?.length > 0 ? (
 									genres.map((genre) => {
