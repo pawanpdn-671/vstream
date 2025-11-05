@@ -46,6 +46,10 @@ export const privateRoutes = [
 		path: "/stream/:imdb_id",
 		component: lazy(() => import("@/pages/Stream")),
 	},
+	{
+		path: "/bookmarked-movies",
+		component: lazy(() => import("@/pages/Bookmark")),
+	},
 ];
 
 export const adminRoutes = [

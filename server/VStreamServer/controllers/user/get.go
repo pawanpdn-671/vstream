@@ -136,20 +136,19 @@ func GetBookmarkedMovies(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
-		cursor, err := movieCollection.Find(ctx, bson.M{"_id": bson.M{"$in": user.BookmarkedMovieIDs}})
+		movieCollection := database.OpenCollection("movies", client)
+		filter := bson.M{"_id": bson.M{"$in": user.BookmarkedMovieIDs}}
 
+		cursor, err := movieCollection.Find(ctx, filter)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		defer cursor.Close(ctx)
 
 		var bookmarkedMovies []models.Movie
-
 		if err = cursor.All(ctx, &bookmarkedMovies); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get bookmarked movies."})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode bookmarked movies."})
 			return
 		}
 

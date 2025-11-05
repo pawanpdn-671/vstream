@@ -30,6 +30,7 @@ const Movie = ({ movie }) => {
 			{
 				onSuccess: () => {
 					queryClient.invalidateQueries({ queryKey: ["profile"] });
+					queryClient.invalidateQueries({ queryKey: ["bookmarked-movies"] });
 					setShowBookmarkMsg(true);
 					messageTimerRef.current = setTimeout(() => {
 						setShowBookmarkMsg(false);

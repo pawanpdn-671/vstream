@@ -34,7 +34,7 @@ const MoviesContainer = ({ movies, errorMessage, isError, isLoading, isFetching,
 					/>
 				</div>
 			)}
-			{!isFetching && <div ref={ref} style={{ height: "1px" }} />}
+			{!isFetching && ref && <div ref={ref} style={{ height: "1px" }} />}
 		</div>
 	);
 };

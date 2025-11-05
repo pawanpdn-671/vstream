@@ -167,6 +167,7 @@ func ToggleBookmarkMovie(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
+		movieObjectID, err := bson.ObjectIDFromHex(movieId)
 		userCollection := database.OpenCollection("users", client)
 
 		// Fetch user document
@@ -180,7 +181,7 @@ func ToggleBookmarkMovie(client *mongo.Client) gin.HandlerFunc {
 		// Check if the movie is already bookmarked
 		isBookmarked := false
 		for _, id := range user.BookmarkedMovieIDs {
-			if id == movieId {
+			if id == movieObjectID {
 				isBookmarked = true
 				break
 			}

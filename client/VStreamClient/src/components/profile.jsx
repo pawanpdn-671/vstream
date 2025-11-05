@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Moon, Settings, Sun } from "lucide-react";
+import { Bookmark, Moon, Settings, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./shared/avatar";
 import { Button } from "./shared/button";
@@ -29,6 +29,14 @@ const ProfileMenu = () => {
 							<Button variant="ghost" className={"w-full justify-start"}>
 								<Settings />
 								Settings
+							</Button>
+						</Link>
+					</DropdownMenuItem>
+					<DropdownMenuItem asChild>
+						<Link to="/bookmarked-movies">
+							<Button variant="ghost" className={"w-full justify-start"}>
+								<Bookmark />
+								Bookmarked Movies
 							</Button>
 						</Link>
 					</DropdownMenuItem>
