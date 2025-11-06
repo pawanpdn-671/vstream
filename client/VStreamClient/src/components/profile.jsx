@@ -18,7 +18,7 @@ const ProfileMenu = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Avatar className={"cursor-pointer h-[40px] w-[40px]"}>
-					<AvatarImage src={profileURL} alt="@shadcn" />
+					<AvatarImage src={profileURL} alt="user" />
 					<AvatarFallback>{fallbackInitials}</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>

@@ -36,9 +36,9 @@ const ProcessedMoviesFeed = ({ movies, isError, error }) => {
 	return (
 		<div>
 			<h3 className="text-lg text-muted-foreground font-medium">Processed Results</h3>
-			<div className="mt-5 flex flex-wrap gap-4">
+			<div className="mt-5 grid grid-cols-2 gap-4">
 				{movies?.map((movie) => (
-					<div key={movie.imdb_id} className="w-[280px]">
+					<div key={movie.imdb_id} className="w-[280px] h-full">
 						<Movie movie={movie} />
 					</div>
 				))}

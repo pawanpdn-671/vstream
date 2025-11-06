@@ -23,8 +23,6 @@ const UpdateMovieFields = ({ movie, onSubmit, onCancel, isLoading }) => {
 			posterPath: movie.poster_path ?? "",
 			youtubeId: movie.youtube_id ?? "",
 			genre: movie.genre ?? [],
-			adminReview: movie.admin_review ?? "",
-			ranking: movie.ranking ?? null,
 		},
 	});
 
@@ -87,30 +85,7 @@ const UpdateMovieFields = ({ movie, onSubmit, onCancel, isLoading }) => {
 					/>
 				</div>
 
-				<Controller
-					name="adminReview"
-					control={control}
-					disabled={true}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel>Admin Review</FieldLabel>
-							<Input {...field} />
-						</Field>
-					)}
-				/>
 				<div className="grid grid-cols-2 gap-4">
-					<Controller
-						name="ranking"
-						control={control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel>Ranking</FieldLabel>
-								<span className="text-gradient text-sm font-medium w-max! border border-orange-400 rounded-sm px-2 py-1">
-									{field?.value?.ranking_value} - {field?.value?.ranking_name}
-								</span>
-							</Field>
-						)}
-					/>
 					<Controller
 						name="genre"
 						control={control}

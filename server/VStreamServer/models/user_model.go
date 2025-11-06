@@ -19,6 +19,8 @@ type User struct {
 	UpdatedAt          time.Time       `json:"updated_at" bson:"updated_at"`
 	FavouriteGenres    []Genre         `json:"favourite_genres" bson:"favourite_genres" validate:"required,dive"`
 	BookmarkedMovieIDs []bson.ObjectID `json:"bookmarked_movie_ids,omitempty" bson:"bookmarked_movie_ids,omitempty"`
+	LikedMovies        []bson.ObjectID `json:"liked_movies,omitempty" bson:"liked_movies,omitempty"`
+	DislikedMovies     []bson.ObjectID `json:"disliked_movies,omitempty" bson:"disliked_movies,omitempty"`
 }
 
 type UserLogin struct {

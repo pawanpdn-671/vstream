@@ -49,7 +49,7 @@ const Movie = ({ movie }) => {
 	}, []);
 
 	return (
-		<div className="relative group rounded-md overflow-hidden min-h-[300px] w-full">
+		<div className="relative group rounded-md overflow-hidden min-h-[300px] h-full w-full">
 			<Link to={`/stream/${movie?.imdb_id}`} onClick={() => setSelectedMovie(movie)}>
 				<Card className="shadow-sm h-full w-full p-0 relative overflow-hidden">
 					<img
@@ -79,10 +79,6 @@ const Movie = ({ movie }) => {
 								{movie.plot}
 							</CardDescription>
 						</CardHeader>
-
-						<CardContent className="p-0 mt-2">
-							{movie?.ranking?.ranking_name && <Badge variant="secondary">{movie.ranking.ranking_name}</Badge>}
-						</CardContent>
 					</div>
 				</Card>
 			</Link>

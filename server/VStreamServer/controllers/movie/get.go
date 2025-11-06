@@ -7,10 +7,8 @@ import (
 	"log"
 	"math"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +16,6 @@ import (
 	"github.com/pawanpdn-671/vstream/server/VStreamServer/database"
 	"github.com/pawanpdn-671/vstream/server/VStreamServer/models"
 	"github.com/pawanpdn-671/vstream/server/VStreamServer/utils"
-	"github.com/tmc/langchaingo/llms/openai"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -99,104 +96,44 @@ func GetMovie(client *mongo.Client) gin.HandlerFunc {
 		defer cancel()
 
 		movieID := c.Param("imdb_id")
-
 		if movieID == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "movie id is required!"})
+			return
 		}
 
+		movieCollection := database.OpenCollection("movies", client)
+		reviewCollection := database.OpenCollection("reviews", client)
+
+		// Fetch the movie by imdb_id
 		var movie models.Movie
-
-		var movieCollection *mongo.Collection = database.OpenCollection("movies", client)
 		err := movieCollection.FindOne(ctx, bson.M{"imdb_id": movieID}).Decode(&movie)
-
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "movie not found!"})
 			return
 		}
 
-		c.JSON(http.StatusOK, movie)
-
-	}
-}
-
-func GetReviewRanking(admin_review string, client *mongo.Client, c *gin.Context) (string, int, error) {
-	rankings, err := getRankings(client, c)
-
-	if err != nil {
-		return "", 0, err
-	}
-
-	sentimentDelimited := ""
-
-	for _, ranking := range rankings {
-		if ranking.RankingValue != 999 {
-			sentimentDelimited = sentimentDelimited + ranking.RankingName + ","
+		// Fetch all reviews for this movie (matching by movie's ObjectID)
+		var reviews []models.Review
+		cursor, err := reviewCollection.Find(ctx, bson.M{"movie_id": movie.ID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error fetching reviews"})
+			return
 		}
-	}
+		defer cursor.Close(ctx)
 
-	sentimentDelimited = strings.Trim(sentimentDelimited, ",")
-
-	err = godotenv.Load(".env")
-
-	if err != nil {
-		log.Println("Warning: .env file is missing")
-	}
-
-	groqApiKey := os.Getenv("GROQ_API_KEY")
-	if groqApiKey == "" {
-		return "", 0, errors.New("could not read api key")
-	}
-
-	llm, err := openai.New(
-		openai.WithToken(groqApiKey),
-		openai.WithBaseURL("https://api.groq.com/openai/v1"),
-		openai.WithModel("llama-3.3-70b-versatile"),
-	)
-
-	if err != nil {
-		return "", 0, err
-	}
-
-	base_prompt_template := os.Getenv("BASE_PROMPT_TEMPLATE")
-
-	base_prompt := strings.Replace(base_prompt_template, "{rankings}", sentimentDelimited, 1)
-
-	response, err := llm.Call(c, base_prompt+admin_review)
-
-	if err != nil {
-		return "", 0, err
-	}
-	rankVal := 0
-
-	for _, ranking := range rankings {
-		if ranking.RankingName == response {
-			rankVal = ranking.RankingValue
-			break
+		if err = cursor.All(ctx, &reviews); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error decoding reviews"})
+			return
 		}
+
+		// Combine movie and reviews in a single response
+		response := gin.H{
+			"movie":   movie,
+			"reviews": reviews,
+		}
+
+		c.JSON(http.StatusOK, response)
 	}
-
-	return response, rankVal, nil
-}
-
-func getRankings(client *mongo.Client, c *gin.Context) ([]models.Ranking, error) {
-	var rankings []models.Ranking
-
-	var ctx, cancel = context.WithTimeout(c, 100*time.Second)
-	defer cancel()
-
-	var rankingCollection *mongo.Collection = database.OpenCollection("rankings", client)
-	cursor, err := rankingCollection.Find(ctx, bson.M{})
-
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(ctx)
-
-	if err := cursor.All(ctx, &rankings); err != nil {
-		return nil, err
-	}
-
-	return rankings, nil
 }
 
 func GetRecommendedMovies(client *mongo.Client) gin.HandlerFunc {
@@ -220,16 +157,7 @@ func GetRecommendedMovies(client *mongo.Client) gin.HandlerFunc {
 			log.Println("Warning: .env file is missing!")
 		}
 
-		var recommendedMovieLimitVal int64 = 5
-		var recommendedMovieLimit = os.Getenv("RECOMMENDED_MOVIE_LIMIT")
-
-		if recommendedMovieLimit != "" {
-			recommendedMovieLimitVal, _ = strconv.ParseInt(recommendedMovieLimit, 10, 64)
-		}
-
 		findOptions := options.Find()
-		findOptions.SetSort(bson.D{{Key: "ranking.ranking_value", Value: 1}})
-		findOptions.SetLimit(recommendedMovieLimitVal)
 
 		filter := bson.M{"genre.genre_name": bson.M{"$in": favourite_genres}}
 
