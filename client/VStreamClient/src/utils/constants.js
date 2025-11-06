@@ -87,3 +87,12 @@ export const SETTINGS_MENU_ITEMS = [
 ];
 
 export const EXCLUDE_SEARCHBAR_ROUTES = ["/settings", "/stream"];
+
+export const MODAL_TITLE_INFO = {
+	MOVIE: {
+		DELETE: {
+			TITLE: "Delete Movie",
+			DESCRIPTION: "Are you sure you want to Delete the Movie?",
+		},
+	},
+};

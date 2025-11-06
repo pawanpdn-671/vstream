@@ -12,6 +12,7 @@ func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
 	router.PATCH("/update_review/:imdb_id", AdminReviewUpdate(client))
 	router.POST("/movie/user_story/wai", GenerateMovieFromStory(client))
 	router.PATCH("/movie/:id/update", UpdateMovie(client))
+	router.DELETE("/movie/:id/delete", DeleteMovie(client))
 }
 
 func RegisterPublicRoutes(router *gin.Engine, client *mongo.Client) {

@@ -10,4 +10,5 @@ export const movieApi = {
 	getUserStoryBasedMovies: (payload) => api.post("/movie/user_story/wai", payload),
 	addMovie: (payload) => api.post("/movie/add", payload),
 	updateMovie: ({ payload, id }) => api.patch(`/movie/${id}/update`, payload),
+	deleteMovie: (id) => api.delete(`/movie/${id}/delete`),
 };

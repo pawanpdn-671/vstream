@@ -5,13 +5,18 @@ import { SquarePen, Trash } from "lucide-react";
 import { useAddUpdateMovie } from "@/hooks/movies/useAddUpdateMovie";
 import UpdateMovieFields from "./update-movie-fields";
 import { toSnakeCase } from "@/utils/case-convert";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { movieApi } from "@/service/movieApi";
+import DeleteConfirmationModal from "./delete-modal";
+import { MODAL_TITLE_INFO } from "@/utils/constants";
 
 const MoviesListItem = ({ movie }) => {
 	const [updateMovie, setUpdateMovie] = useState(false);
+	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const queryClient = useQueryClient();
 	const { movieHandler, isPending } = useAddUpdateMovie("update");
+	const { mutate: deleteMovieHandler } = useMutation({ mutationFn: movieApi.deleteMovie });
 
 	const handleSubmit = (data) => {
 		const { ranking, admin_review, genre, ...rest } = data;
@@ -30,6 +35,19 @@ const MoviesListItem = ({ movie }) => {
 		);
 	};
 
+	const handleDelete = () => {
+		deleteMovieHandler(movie.imdb_id, {
+			onSuccess: () => {
+				toast.success("Movie Deleted.");
+				setOpenDeleteModal(false);
+				queryClient.invalidateQueries({ queryKey: ["manage-movies-list"] });
+			},
+			onError: () => {
+				toast.error("Failed to delete movie!");
+			},
+		});
+	};
+
 	return (
 		<>
 			<Item variant="outline" key={movie._id} className="shadow-sm items-start">
@@ -46,7 +64,7 @@ const MoviesListItem = ({ movie }) => {
 					<Button variant="outline" size="icon" onClick={() => setUpdateMovie(true)}>
 						<SquarePen className="text-green-600" />
 					</Button>
-					<Button variant="outline" size="icon">
+					<Button variant="outline" size="icon" onClick={() => setOpenDeleteModal(true)}>
 						<Trash className="text-destructive" />
 					</Button>
 				</ItemActions>
@@ -59,6 +77,14 @@ const MoviesListItem = ({ movie }) => {
 					/>
 				)}
 			</Item>
+			<DeleteConfirmationModal
+				open={openDeleteModal}
+				setOpen={setOpenDeleteModal}
+				buttonText={"Delete"}
+				description={MODAL_TITLE_INFO.MOVIE.DELETE.DESCRIPTION}
+				onConfirm={handleDelete}
+				title={MODAL_TITLE_INFO.MOVIE.DELETE.TITLE}
+			/>
 		</>
 	);
 };
