@@ -8,4 +8,6 @@ export const movieApi = {
 	getRecommendedMovies: ({ pageParam, limit }) =>
 		api.get("/recommended_movies", { params: { page: pageParam, limit } }),
 	getUserStoryBasedMovies: (payload) => api.post("/movie/user_story/wai", payload),
+	addMovie: (payload) => api.post("/movie/add", payload),
+	updateMovie: ({ payload, id }) => api.patch(`/movie/${id}/update`, payload),
 };

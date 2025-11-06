@@ -10,6 +10,7 @@ import (
 	"github.com/pawanpdn-671/vstream/server/VStreamServer/utils"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func AdminReviewUpdate(client *mongo.Client) gin.HandlerFunc {
@@ -85,4 +86,54 @@ func AdminReviewUpdate(client *mongo.Client) gin.HandlerFunc {
 		c.JSON(http.StatusOK, resp)
 	}
 
+}
+
+func UpdateMovie(client *mongo.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(c, 100*time.Second)
+		defer cancel()
+
+		movieID := c.Param("id")
+		if movieID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "movie ID is required"})
+			return
+		}
+
+		var updateData map[string]interface{}
+		if err := c.ShouldBindJSON(&updateData); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+			return
+		}
+
+		// Remove _id if present, we never allow updates to _id
+		delete(updateData, "_id")
+
+		// Ensure there’s at least one field to update
+		if len(updateData) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "no fields provided to update"})
+			return
+		}
+
+		movieCollection := database.OpenCollection("movies", client)
+
+		filter := bson.M{"imdb_id": movieID}
+		update := bson.M{"$set": updateData}
+
+		opts := options.UpdateOne().SetUpsert(false)
+		result, err := movieCollection.UpdateOne(ctx, filter, update, opts)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update movie"})
+			return
+		}
+
+		if result.MatchedCount == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "movie not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Movie updated successfully",
+		})
+	}
 }

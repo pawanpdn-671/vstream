@@ -7,10 +7,11 @@ import (
 
 func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
 	router.GET("/movie/:imdb_id", GetMovie(client))
-	router.POST("/addmovie", AddMovie(client))
+	router.POST("/movie/add", AddMovie(client))
 	router.GET("/recommended_movies", GetRecommendedMovies(client))
 	router.PATCH("/update_review/:imdb_id", AdminReviewUpdate(client))
 	router.POST("/movie/user_story/wai", GenerateMovieFromStory(client))
+	router.PATCH("/movie/:id/update", UpdateMovie(client))
 }
 
 func RegisterPublicRoutes(router *gin.Engine, client *mongo.Client) {
