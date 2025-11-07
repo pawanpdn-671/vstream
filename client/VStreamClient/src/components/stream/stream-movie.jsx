@@ -1,10 +1,10 @@
-import React from "react";
 import ReactPlayer from "react-player";
 import GradientBorder from "../shared/gradient-border";
 import MovieReviews from "./reviews";
+import UploadedInfo from "./uploaded-info";
 
 const StreamMovie = ({ movie, reviews }) => {
-	const { title, plot, genre, admin_review, ranking } = movie;
+	const { title, plot } = movie;
 
 	return (
 		<div className="flex gap-10">
@@ -18,7 +18,10 @@ const StreamMovie = ({ movie, reviews }) => {
 						controls
 					/>
 				</div>
-				<div className="mt-5">
+				<div className="mt-8">
+					<UploadedInfo imdbId={movie?.imdb_id} movieId={movie?._id} movie={movie} />
+				</div>
+				<div>
 					<MovieReviews imdbId={movie?.imdb_id} reviews={reviews} />
 				</div>
 			</div>

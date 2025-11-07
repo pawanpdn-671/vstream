@@ -50,6 +50,8 @@ func AddMovie(client *mongo.Client) gin.HandlerFunc {
 			})
 			return
 		}
+		movie.CreatedAt = time.Now()
+		movie.UpdatedAt = time.Now()
 
 		result, err := movieCollection.InsertOne(ctx, movie)
 		if err != nil {

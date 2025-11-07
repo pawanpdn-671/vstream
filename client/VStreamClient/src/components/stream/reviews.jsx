@@ -7,6 +7,8 @@ import { useAddReview } from "@/hooks/review/useAddReview";
 import { useAuthStore } from "@/store/useAuthStore";
 import ReviewItem from "./review-item";
 import { useQueryClient } from "@tanstack/react-query";
+import { EmptyResult } from "../empty-result";
+import { APP_EMPTY_MESSAGES } from "@/utils/constants";
 
 const MovieReviews = ({ reviews, imdbId }) => {
 	const [reviewText, setReviewText] = useState("");
@@ -71,7 +73,13 @@ const MovieReviews = ({ reviews, imdbId }) => {
 				{reviews && reviews?.length ? (
 					reviews?.map((review) => <ReviewItem key={review._id} review={review} />)
 				) : (
-					<></>
+					<EmptyResult
+						title={APP_EMPTY_MESSAGES.REVIEWS.TITLE}
+						description={APP_EMPTY_MESSAGES.REVIEWS.DESCRIPTION}
+						icon={APP_EMPTY_MESSAGES.REVIEWS.ICON}
+						iconColor={"muted-foreground"}
+						noAction
+					/>
 				)}
 			</div>
 		</div>

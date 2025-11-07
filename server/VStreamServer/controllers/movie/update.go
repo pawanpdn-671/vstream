@@ -39,6 +39,7 @@ func UpdateMovie(client *mongo.Client) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "no fields provided to update"})
 			return
 		}
+		updateData["updated_at"] = time.Now()
 
 		movieCollection := database.OpenCollection("movies", client)
 
@@ -87,12 +88,6 @@ func LikeOrDislikeMovie(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		userObjID, err := bson.ObjectIDFromHex(userId)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user_id"})
-			return
-		}
-
 		movieCollection := database.OpenCollection("movies", client)
 		userCollection := database.OpenCollection("users", client)
 
@@ -106,9 +101,15 @@ func LikeOrDislikeMovie(client *mongo.Client) gin.HandlerFunc {
 
 		// Fetch user
 		var user models.User
-		err = userCollection.FindOne(ctx, bson.M{"_id": userObjID}).Decode(&user)
+		err = userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+
+		userObjID, err := bson.ObjectIDFromHex(userId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user_id"})
 			return
 		}
 
@@ -208,7 +209,7 @@ func LikeOrDislikeMovie(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		if len(userUpdate) > 0 {
-			_, err = userCollection.UpdateOne(ctx, bson.M{"_id": userObjID}, userUpdate)
+			_, err = userCollection.UpdateOne(ctx, bson.M{"_id": user.ID}, userUpdate)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update user"})
 				return

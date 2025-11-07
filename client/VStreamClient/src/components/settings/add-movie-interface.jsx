@@ -14,6 +14,7 @@ import RegisterPage from "@/pages/Register";
 import { toSnakeCase } from "@/utils/case-convert";
 import { parseError } from "@/utils/parse-error";
 import { toast } from "sonner";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const addMovieSchema = z.object({
 	imdbId: z.string().min(1, "Title is required."),
@@ -25,6 +26,7 @@ const addMovieSchema = z.object({
 });
 
 const AddMovieInterface = () => {
+	const { user } = useAuthStore();
 	const { genres, isLoading } = useGenres();
 	const { movieHandler, isPending, isError } = useAddUpdateMovie("add");
 	const { handleSubmit, control, reset } = useForm({
@@ -52,6 +54,11 @@ const AddMovieInterface = () => {
 		const payload = toSnakeCase({
 			...rest,
 			genre: genreObjects,
+			uploaded_by: {
+				user_id: user.user_id,
+				first_name: user.first_name,
+				last_name: user.last_name,
+			},
 		});
 
 		movieHandler(payload, {

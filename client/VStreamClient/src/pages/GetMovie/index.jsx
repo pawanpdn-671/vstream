@@ -7,6 +7,7 @@ import { Spinner } from "@/components/shared/spinner";
 import { Textarea } from "@/components/shared/textarea";
 import TitleWithLine from "@/components/shared/title-with-line";
 import { movieApi } from "@/service/movieApi";
+import { useAuthStore } from "@/store/useAuthStore";
 import { PAGE_TITLE } from "@/utils/constants";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 const GetMoviePage = () => {
 	const [userStoryText, setUserStoryText] = useState("");
 	const [showProcessedResult, setShowProcessedResult] = useState(false);
+	const { user } = useAuthStore();
 	const {
 		mutate: getUserStoryBasedMovies,
 		data,
@@ -28,6 +30,8 @@ const GetMoviePage = () => {
 		mutationFn: movieApi.getUserStoryBasedMovies,
 	});
 
+	console.log(data);
+
 	const handleProcess = () => {
 		if (!userStoryText?.trim()) {
 			toast.error("Write down story to start the process.");
@@ -37,14 +41,16 @@ const GetMoviePage = () => {
 			toast.error("Story should atleast contain some words.");
 			return;
 		}
-
-		getUserStoryBasedMovies(
-			{ story: userStoryText },
-			{
-				onSuccess: () => setShowProcessedResult(true),
-				onError: () => setShowProcessedResult(true),
-			},
-		);
+		const payload = {
+			story: userStoryText,
+			user_id: user.user_id,
+			first_name: user.first_name,
+			last_name: user.last_name,
+		};
+		getUserStoryBasedMovies(payload, {
+			onSuccess: () => setShowProcessedResult(true),
+			onError: () => setShowProcessedResult(true),
+		});
 	};
 
 	return (

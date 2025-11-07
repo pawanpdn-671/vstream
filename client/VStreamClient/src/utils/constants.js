@@ -1,4 +1,4 @@
-import { Clapperboard, LayoutDashboard, TriangleAlert, UserRoundCog } from "lucide-react";
+import { Clapperboard, LayoutDashboard, MessageSquareText, TriangleAlert, UserRoundCog } from "lucide-react";
 
 export const APP_EMPTY_MESSAGES = {
 	MOVIES: {
@@ -9,6 +9,11 @@ export const APP_EMPTY_MESSAGES = {
 	GROQ_RESPONSE: {
 		TITLE: "No Movie Exist with the Story Provided",
 		ICON: Clapperboard,
+	},
+	REVIEWS: {
+		TITLE: "No Reviews Yet",
+		DESCRIPTION: "Be the first one to add a review.",
+		ICON: MessageSquareText,
 	},
 };
 

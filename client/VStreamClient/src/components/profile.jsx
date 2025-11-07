@@ -10,9 +10,9 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 const ProfileMenu = () => {
 	const { theme, setTheme } = useTheme();
-	const { user } = useAuthStore();
+	const { user, getProfileUrl } = useAuthStore();
 	const fallbackInitials = getInitials(user?.first_name, user?.last_name);
-	const profileURL = `${import.meta.env.VITE_API_BASE_URL}/users/${user?.user_id}/avatar`;
+	const profileURL = getProfileUrl();
 
 	return (
 		<DropdownMenu>

@@ -193,7 +193,10 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		var req struct {
-			Story string `json:"story"`
+			Story     string `json:"story"`
+			UserId    string `json:"user_id"`
+			FirstName string `json:"first_name"`
+			LastName  string `json:"last_name"`
 		}
 
 		if err := c.BindJSON(&req); err != nil {
@@ -359,6 +362,13 @@ func GenerateMovieFromStory(client *mongo.Client) gin.HandlerFunc {
 					YoutubeID:  utils.GetString(movieMap, "youtube_id"),
 					Genre:      genres,
 					Plot:       utils.GetString(movieMap, "plot"),
+					UploadedBy: models.UploadedUser{
+						UserID:    req.UserId,
+						FirstName: req.FirstName,
+						LastName:  req.LastName,
+					},
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
 				}
 
 				// Skip if no IMDB ID (invalid movie data)
