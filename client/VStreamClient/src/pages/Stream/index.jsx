@@ -8,12 +8,12 @@ import { useParams } from "react-router-dom";
 
 const StreamPage = () => {
 	const { imdb_id } = useParams();
-	const { movie, isLoading, isError, errorMessage, reviews } = useMovieById(imdb_id);
+	const { movie, isLoading, isError, errorMessage } = useMovieById(imdb_id);
 
 	return (
 		<PageWrapper>
 			<div className="py-10">
-				{isLoading ? <StreamPage.Skeleton /> : !isError && <StreamMovie movie={movie} reviews={reviews} />}
+				{isLoading ? <StreamPage.Skeleton /> : !isError && <StreamMovie movie={movie} />}
 				{isError && !isLoading && (
 					<div className="text-center">
 						<EmptyResult

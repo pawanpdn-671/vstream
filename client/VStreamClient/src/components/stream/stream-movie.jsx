@@ -6,10 +6,20 @@ import { Skeleton } from "../shared/skeleton";
 import { useState } from "react";
 import { format, isAfter, isValid, parseISO } from "date-fns";
 import PopularWords from "./popular-words";
+import { useQuery } from "@tanstack/react-query";
+import { reviewApi } from "@/service/reviewApi";
 
-const StreamMovie = ({ movie, reviews }) => {
-	const { title, plot, genre } = movie;
+const StreamMovie = ({ movie }) => {
 	const [playerReady, setPlayerReady] = useState(false);
+	const [totalReviews, setTotalReviews] = useState(0);
+
+	const { data, isloading } = useQuery({
+		queryFn: () => reviewApi.getTopWords(movie.imdb_id),
+		queryKey: ["top-words", movie?.imdb_id],
+		enabled: totalReviews >= 5 && !!movie?.imdb_id,
+	});
+
+	const { title, plot, genre } = movie;
 	const date = parseISO(movie?.created_at);
 	const isRealDate = date && isValid(date) && isAfter(date, new Date("1900-01-01"));
 
@@ -37,7 +47,7 @@ const StreamMovie = ({ movie, reviews }) => {
 					<UploadedInfo imdbId={movie?.imdb_id} movieId={movie?._id} movie={movie} />
 				</div>
 				<div>
-					<MovieReviews imdbId={movie?.imdb_id} reviews={reviews} />
+					<MovieReviews imdbId={movie?.imdb_id} setTotalReviews={setTotalReviews} />
 				</div>
 			</div>
 			<div className="w-[400px] flex flex-col gap-4">
@@ -56,7 +66,7 @@ const StreamMovie = ({ movie, reviews }) => {
 						</span>
 					))}
 				</div>
-				<PopularWords movieId={movie.imdb_id} />
+				{totalReviews >= 5 && !!movie?.imdb_id && <PopularWords isLoading={isloading} data={data?.popular_words} />}
 			</div>
 		</div>
 	);

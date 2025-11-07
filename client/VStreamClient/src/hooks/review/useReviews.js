@@ -18,9 +18,11 @@ export const useReviews = (imdbId) => {
 
 	const flatReviews = Array.isArray(data?.pages) ? data.pages.flatMap((page) => page?.data ?? []) : [];
 	const errorMessage = isError ? parseError(error) : "";
+	const totalDocs = Array.isArray(data?.pages) ? data?.pages[0]?.total : 0;
 
 	return {
 		reviews: flatReviews ?? [],
+		totalDocs,
 		error,
 		isLoading,
 		isError,

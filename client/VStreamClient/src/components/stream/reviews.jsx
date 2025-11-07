@@ -13,10 +13,11 @@ import { useReviews } from "@/hooks/review/useReviews";
 import { useInView } from "react-intersection-observer";
 import { Skeleton } from "../shared/skeleton";
 
-const MovieReviews = ({ imdbId }) => {
+const MovieReviews = ({ imdbId, setTotalReviews }) => {
 	const [reviewText, setReviewText] = useState("");
 	const [writeReview, setWriteReview] = useState(false);
-	const { reviews, isLoading, isFetching, isError, errorMessage, fetchNextPage, hasNextPage } = useReviews(imdbId);
+	const { reviews, totalDocs, isLoading, isFetching, isError, errorMessage, fetchNextPage, hasNextPage } =
+		useReviews(imdbId);
 	const { addReviewHandler, isPending } = useAddReview();
 	const { ref, inView } = useInView();
 	const hasLoadedInitial = useRef(false);
@@ -26,6 +27,7 @@ const MovieReviews = ({ imdbId }) => {
 	useEffect(() => {
 		if (reviews?.length > 0 && !isLoading && !hasLoadedInitial.current) {
 			hasLoadedInitial.current = true;
+			setTotalReviews(totalDocs);
 		}
 	}, [reviews, isLoading]);
 
