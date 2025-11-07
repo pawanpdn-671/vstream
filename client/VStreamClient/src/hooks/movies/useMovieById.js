@@ -12,8 +12,7 @@ export const useMovieById = (id) => {
 	const errorMessage = isError ? parseError(error) : "";
 
 	return {
-		movie: data?.movie ?? {},
-		reviews: data?.reviews ?? [],
+		movie: data,
 		error,
 		isLoading,
 		isError,

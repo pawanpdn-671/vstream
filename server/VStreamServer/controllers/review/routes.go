@@ -6,5 +6,6 @@ import (
 )
 
 func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
+	router.GET("/movies/:imdb_id/reviews", GetReviewsByMovie(client))
 	router.POST("/movies/:imdb_id/add_review", AddReview(client))
 }

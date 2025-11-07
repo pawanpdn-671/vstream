@@ -13,12 +13,13 @@ const UploadedInfo = ({ imdbId, movieId, movie }) => {
 		mutationFn: movieApi.toggleLikeDislike,
 	});
 	const queryClient = useQueryClient();
-	const uploadedUserExists = Object.values(movie?.uploaded_by).every((value) => value.trim() !== "");
+	const uploadedUserExists =
+		movie?.uploaded_by && Object.values(movie?.uploaded_by).every((value) => value.trim() !== "");
 	const fallbackInitials = uploadedUserExists
 		? getInitials(movie.uploaded_by?.first_name, movie.uploaded_by?.last_name)
-		: getInitials(user?.first_name, user?.last_name);
+		: "A";
 
-	const uploadedUserProfile = uploadedUserExists ? getProfileUrl(movie?.uploaded_by?.user_id) : getProfileUrl();
+	const uploadedUserProfile = uploadedUserExists ? getProfileUrl(movie?.uploaded_by?.user_id) : "";
 	const uploadedUserName = uploadedUserExists
 		? `${movie.uploaded_by?.first_name} ${movie.uploaded_by?.last_name}`
 		: `Admin`;

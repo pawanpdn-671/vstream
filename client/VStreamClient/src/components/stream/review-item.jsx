@@ -44,7 +44,7 @@ const ReviewItem = ({ review }) => {
 
 				<div className="mb-2">{renderStars(review?.rating)}</div>
 
-				<p className="text-sm text-gray-800 whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
+				<p className="text-sm whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
 			</div>
 		</div>
 	);

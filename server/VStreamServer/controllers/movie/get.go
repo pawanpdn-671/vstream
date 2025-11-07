@@ -97,42 +97,20 @@ func GetMovie(client *mongo.Client) gin.HandlerFunc {
 
 		movieID := c.Param("imdb_id")
 		if movieID == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "movie id is required!"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "movie id is required"})
 			return
 		}
 
 		movieCollection := database.OpenCollection("movies", client)
-		reviewCollection := database.OpenCollection("reviews", client)
 
-		// Fetch the movie by imdb_id
 		var movie models.Movie
 		err := movieCollection.FindOne(ctx, bson.M{"imdb_id": movieID}).Decode(&movie)
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "movie not found!"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "movie not found"})
 			return
 		}
 
-		// Fetch all reviews for this movie (matching by movie's ObjectID)
-		var reviews []models.Review
-		cursor, err := reviewCollection.Find(ctx, bson.M{"movie_id": movie.ID})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error fetching reviews"})
-			return
-		}
-		defer cursor.Close(ctx)
-
-		if err = cursor.All(ctx, &reviews); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error decoding reviews"})
-			return
-		}
-
-		// Combine movie and reviews in a single response
-		response := gin.H{
-			"movie":   movie,
-			"reviews": reviews,
-		}
-
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusOK, movie)
 	}
 }
 

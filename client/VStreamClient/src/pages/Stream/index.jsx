@@ -35,10 +35,13 @@ export default StreamPage;
 StreamPage.Skeleton = function StreamPageSkeleton() {
 	return (
 		<div className="w-full flex gap-10">
-			<Skeleton className={"flex-1 aspect-video"} />
-			<div className="w-[400px] flex flex-col gap-4">
+			<div className="flex-1">
+				<Skeleton className={"flex-1 aspect-video"} />
+				<Skeleton className={"mt-8 w-full h-[100px]"} />
+			</div>
+			<div className="w-[400px] shrink-0 flex flex-col gap-4">
 				<Skeleton className={"w-full h-[200px]"} />
-				<Skeleton className={"w-full h-[200px]"} />
+				<Skeleton className={"w-full h-[50px]"} />
 			</div>
 		</div>
 	);
