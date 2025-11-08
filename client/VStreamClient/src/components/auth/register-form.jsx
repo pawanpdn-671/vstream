@@ -154,30 +154,32 @@ export function RegisterForm() {
 							<FieldLabel>Favourite Genres</FieldLabel>
 							<FieldDescription>Select your favourite genres below:</FieldDescription>
 
-							<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border">
-								{isLoading && <RegisterPage.GenreSkeleton />}
-								{!isLoading && genres?.length > 0 ? (
-									genres.map((genre) => {
-										const checked = field.value.includes(genre.genre_id);
-										return (
-											<Label key={genre.genre_id} className="flex items-center gap-2 cursor-pointer">
-												<Checkbox
-													checked={checked}
-													onCheckedChange={(isChecked) => {
-														if (isChecked) {
-															field.onChange([...field.value, genre.genre_id]);
-														} else {
-															field.onChange(field.value.filter((id) => id !== genre.genre_id));
-														}
-													}}
-												/>
-												<span>{genre.genre_name}</span>
-											</Label>
-										);
-									})
-								) : (
-									<p className="text-destructive text-sm">No Genres Found.</p>
-								)}
+							<div className="overflow-hidden">
+								<div className="mt-2 flex flex-wrap gap-4 h-40 overflow-y-scroll px-2 py-3 rounded-md border content-start contain-[layout_paint]">
+									{isLoading && <RegisterPage.GenreSkeleton />}
+									{!isLoading && genres?.length > 0 ? (
+										genres.map((genre) => {
+											const checked = field.value.includes(genre.genre_id);
+											return (
+												<Label key={genre.genre_id} className="flex items-center gap-2 cursor-pointer">
+													<Checkbox
+														checked={checked}
+														onCheckedChange={(isChecked) => {
+															if (isChecked) {
+																field.onChange([...field.value, genre.genre_id]);
+															} else {
+																field.onChange(field.value.filter((id) => id !== genre.genre_id));
+															}
+														}}
+													/>
+													<span>{genre.genre_name}</span>
+												</Label>
+											);
+										})
+									) : (
+										<p className="text-destructive text-sm">No Genres Found.</p>
+									)}
+								</div>
 							</div>
 
 							{genres && genres?.length && fieldState.invalid && <FieldError errors={[fieldState.error]} />}

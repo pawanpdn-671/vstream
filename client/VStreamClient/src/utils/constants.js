@@ -82,12 +82,14 @@ export const SETTINGS_MENU_ITEMS = [
 		value: "profile",
 		icon: UserRoundCog,
 		path: "/settings",
+		for: "user",
 	},
 	{
 		name: "Manage Movies",
 		value: "manage_movies",
 		icon: LayoutDashboard,
 		path: "/settings/manage-movies",
+		for: "admin",
 	},
 ];
 

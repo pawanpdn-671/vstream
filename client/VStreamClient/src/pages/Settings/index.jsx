@@ -3,6 +3,7 @@ import { Button } from "@/components/shared/button";
 import PageWrapper from "@/components/shared/page-wrapper";
 import TitleWithLine from "@/components/shared/title-with-line";
 import { authApi } from "@/service/authApi";
+import { useAuthStore } from "@/store/useAuthStore";
 import { SETTINGS_MENU_ITEMS } from "@/utils/constants";
 import { parseError } from "@/utils/parse-error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { Link, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 
 const SettingsPage = () => {
+	const { user } = useAuthStore();
 	const queryClient = useQueryClient();
 	const { mutate: logoutUser } = useMutation({
 		mutationFn: authApi.logout,
@@ -24,20 +26,24 @@ const SettingsPage = () => {
 		},
 	});
 
+	const visibleMenuItems = SETTINGS_MENU_ITEMS.filter((item) => user?.role === "admin" || item.for === "user");
+
 	return (
 		<PageWrapper>
 			<div className="w-full h-[calc(100vh-160px)]">
 				<TitleWithLine title="Settings" />
 				<div className="flex gap-4 h-full py-5">
 					<div className="flex flex-col gap-2 shrink-0 w-[300px]">
-						{SETTINGS_MENU_ITEMS.map((item) => (
-							<Button key={item.name} className={"justify-start"} variant={"outline"} asChild>
-								<Link to={item.path} key={item.value} className="flex items-center gap-2">
-									<item.icon size={20} />
-									<span>{item.name}</span>
-								</Link>
-							</Button>
-						))}
+						{visibleMenuItems.map((item) => {
+							return (
+								<Button key={item.name} className={"justify-start"} variant={"outline"} asChild>
+									<Link to={item.path} key={item.value} className="flex items-center gap-2">
+										<item.icon size={20} />
+										<span>{item.name}</span>
+									</Link>
+								</Button>
+							);
+						})}
 						<UserLogoutModal logoutUser={logoutUser} />
 					</div>
 					<div className="flex-1 pl-10 pb-20">

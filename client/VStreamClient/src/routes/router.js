@@ -1,3 +1,4 @@
+import { ProtectedAdminRouteWrapper } from "@/App";
 import { lazy } from "react";
 
 export const publicRoutes = [
@@ -38,7 +39,10 @@ export const privateRoutes = [
 			},
 			{
 				path: "manage-movies",
-				component: lazy(() => import("@/pages/Settings/manage-movies")),
+				component: () =>
+					ProtectedAdminRouteWrapper({
+						Component: lazy(() => import("@/pages/Settings/manage-movies")),
+					}),
 			},
 		],
 	},

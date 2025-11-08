@@ -8,7 +8,6 @@ import UploadAvatarModal from "./upload-avatar-modal";
 const UserProfile = () => {
 	const [openUploadProfileModal, setOpenUploadProfileModal] = useState(false);
 	const [cacheBuster, setCacheBuster] = useState(Date.now());
-	const [isImageLoaded, setIsImageLoaded] = useState(false);
 	const { user } = useAuthStore();
 
 	const fallbackInitials = getInitials(user?.first_name, user?.last_name);
@@ -18,18 +17,7 @@ const UserProfile = () => {
 		<div className="w-max relative">
 			<Avatar className={"cursor-pointer w-[100px] h-[100px]"}>
 				<AvatarImage src={profileURL} alt="user avatar" />
-				{!isImageLoaded && (
-					<AvatarFallback
-						className={"text-xl font-semibold"}
-						onLoad={() => setIsImageLoaded(true)}
-						onError={() => setIsImageLoaded(false)}
-						style={{
-							opacity: isImageLoaded ? 1 : 0,
-							transition: "opacity 0.3s ease-in-out",
-						}}>
-						{fallbackInitials}
-					</AvatarFallback>
-				)}
+				<AvatarFallback className={"text-xl font-semibold"}>{fallbackInitials}</AvatarFallback>
 			</Avatar>
 			<ImagePlus
 				onClick={() => setOpenUploadProfileModal(true)}

@@ -12,7 +12,7 @@ const AuthLayout = ({ children }) => {
 				<img src={authBg} className="w-full h-full" alt="watch movie image file" />
 			</div>
 
-			<div className="absolute overflow-y-auto left-1/2 top-0 w-full lg:w-1/2 lg:flex-1 h-full flex items-center justify-center bg-linear-to-tr from-red-100 via-white to-orange-100">
+			<div className="absolute overflow-y-auto left-1/2 top-0 w-full lg:w-1/2 h-full  bg-linear-to-tr from-red-100 via-white to-orange-100">
 				{children}
 			</div>
 		</div>
