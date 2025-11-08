@@ -2,8 +2,12 @@ import { formatDistanceToNowStrict } from "date-fns";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../shared/avatar";
 import { getInitials } from "@/lib/utils";
+import { Button } from "../shared/button";
+import { ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({ review, includeBorder, actions }) => {
+	const navigate = useNavigate();
 	const reviewerAvatar = `${import.meta.env.VITE_API_BASE_URL}/users/${review?.user?.user_id}/avatar`;
 	const reviewerName = `${review?.user?.first_name} ${review?.user?.last_name}`;
 	const timeAgo = review?.created_at
@@ -27,25 +31,45 @@ const ReviewItem = ({ review }) => {
 		);
 	};
 
-	return (
-		<div className="flex gap-4 py-4">
-			<div className="shrink-0">
-				<Avatar className={"cursor-pointer h-[40px] w-[40px]"}>
-					<AvatarImage src={reviewerAvatar} alt="user" />
-					<AvatarFallback>{fallbackInitials}</AvatarFallback>
-				</Avatar>
-			</div>
+	const handleActionClick = (type, path, id) => {
+		if (type === "link") {
+			navigate(`${path}/${id}`);
+		}
+	};
 
-			<div className="flex-1 min-w-0">
-				<div className="flex items-center gap-2 mb-1">
-					<span className="font-medium text-sm">{reviewerName}</span>
-					<span className="text-xs text-muted-foreground">{timeAgo}</span>
+	return (
+		<div className={`py-4 ${includeBorder ? "p-3 border shadow-sm rounded-sm" : ""}`}>
+			<div className={`flex gap-4`}>
+				<div className="shrink-0">
+					<Avatar className={"cursor-pointer h-[40px] w-[40px]"}>
+						<AvatarImage src={reviewerAvatar} alt="user" />
+						<AvatarFallback>{fallbackInitials}</AvatarFallback>
+					</Avatar>
 				</div>
 
-				<div className="mb-2">{renderStars(review?.rating)}</div>
+				<div className="flex-1 min-w-0">
+					<div className="flex items-center gap-2 mb-1">
+						<span className="font-medium text-sm">{reviewerName}</span>
+						<span className="text-xs text-muted-foreground">{timeAgo}</span>
+					</div>
 
-				<p className="text-sm whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
+					<div className="mb-2">{renderStars(review?.rating)}</div>
+
+					<p className="text-sm whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
+				</div>
 			</div>
+			{actions &&
+				actions?.map(({ name, icon: Icon, type, path }, index) => (
+					<div key={index} className="flex justify-end">
+						<Button
+							size="sm"
+							onClick={() => handleActionClick(type, path, review?.imdb_id)}
+							variant="ghost"
+							className={"text-xs h-auto px-2 py-1"}>
+							<Icon className="w-[15px]! h-[15px]!" /> {name}
+						</Button>
+					</div>
+				))}
 		</div>
 	);
 };

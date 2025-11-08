@@ -116,6 +116,7 @@ func AddReview(client *mongo.Client) gin.HandlerFunc {
 
 		// Attach metadata ---
 		review.MovieID = movie.ID
+		review.ImdbID = movie.ImdbID
 		review.CreatedAt = time.Now()
 		review.UpdatedAt = time.Now()
 

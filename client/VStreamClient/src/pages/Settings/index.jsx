@@ -26,7 +26,7 @@ const SettingsPage = () => {
 		},
 	});
 
-	const visibleMenuItems = SETTINGS_MENU_ITEMS.filter((item) => user?.role === "ADMIN" || item.for === "USER");
+	const visibleMenuItems = SETTINGS_MENU_ITEMS.filter((item) => user?.role === "ADMIN" || item.for === "user");
 
 	return (
 		<PageWrapper>

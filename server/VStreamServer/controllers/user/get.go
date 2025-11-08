@@ -251,6 +251,7 @@ func GetUserReviews(client *mongo.Client) gin.HandlerFunc {
 		findOptions := options.Find()
 		findOptions.SetSkip(int64(skip))
 		findOptions.SetLimit(int64(limit))
+		findOptions.SetSort(bson.M{"created_at": -1})
 
 		reviewCollection := database.OpenCollection("reviews", client)
 		filter := bson.M{"user.user_id": userId}

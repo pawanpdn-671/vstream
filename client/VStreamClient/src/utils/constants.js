@@ -3,6 +3,7 @@ import {
 	HeartPlus,
 	LayoutDashboard,
 	MessageSquareHeart,
+	MessageSquareMore,
 	MessageSquareText,
 	ThumbsUp,
 	TriangleAlert,
@@ -29,6 +30,11 @@ export const APP_EMPTY_MESSAGES = {
 		DESCRIPTION: "Watch and give a like, to see your liked movies here.",
 		ICON: ThumbsUp,
 	},
+	USER_REVIEWS: {
+		TITLE: "No Reviews Found.",
+		DESCRIPTION: "Watch a movie and give review, and see all your reviews here.",
+		ICON: MessageSquareMore,
+	},
 };
 
 export const APP_ERROR_MESSAGES = {
@@ -46,6 +52,10 @@ export const APP_ERROR_MESSAGES = {
 	},
 	LIKED_MOVIES: {
 		TITLE: "Failed to get Liked Movies.",
+		ICON: TriangleAlert,
+	},
+	USER_REVIEWS: {
+		TITLE: "Failed to get reviews.",
 		ICON: TriangleAlert,
 	},
 };

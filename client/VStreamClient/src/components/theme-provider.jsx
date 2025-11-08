@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import { createContext, useEffect, useState } from "react";
 
 const ThemeProviderContext = createContext({
@@ -9,13 +10,14 @@ export function ThemeProvider({ children, defaultTheme = "light", storageKey = "
 	const [theme, setTheme] = useState(() => {
 		return localStorage.getItem(storageKey) || defaultTheme;
 	});
+	const { isAuthenticated } = useAuthStore();
 
 	useEffect(() => {
 		const root = window.document.documentElement;
 		root.classList.remove("light", "dark");
 
-		root.classList.add(theme);
-	}, [theme]);
+		root.classList.add(isAuthenticated ? theme : "light");
+	}, [theme, isAuthenticated]);
 
 	const value = {
 		theme,

@@ -5,7 +5,7 @@ export function EmptyResult({ icon: Icon, title, description, buttonText, button
 	return (
 		<Empty>
 			<EmptyHeader>
-				{Icon && <Icon className={`${iconColor ? `text-${iconColor}` : ""}`} size={48} />}
+				{Icon && <Icon className={`${iconColor ? `text-${iconColor}` : "text-muted-foreground"}`} size={48} />}
 				<EmptyTitle>{title}</EmptyTitle>
 				<EmptyDescription>{description}</EmptyDescription>
 			</EmptyHeader>

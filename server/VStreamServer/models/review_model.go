@@ -15,6 +15,7 @@ type ReviewUser struct {
 type Review struct {
 	ID        bson.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	MovieID   bson.ObjectID `bson:"movie_id" json:"movie_id" validate:"required"`
+	ImdbID    string        `bson:"imdb_id" json:"imdb_id" validate:"required"`
 	User      ReviewUser    `bson:"user" json:"user" validate:"required,dive"`
 	Rating    float64       `bson:"rating" json:"rating"`
 	Comment   string        `bson:"comment" json:"comment" validate:"required,min=3,max=1000"`
