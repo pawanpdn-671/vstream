@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")).render(
 			<QueryClientProvider client={queryClient}>
 				<AppLayout>
 					<App />
-					<Toaster position="top-right" />
+					<Toaster position="top-right" duration={2000} />
 				</AppLayout>
 			</QueryClientProvider>
 		</BrowserRouter>

@@ -40,7 +40,7 @@ const UploadedInfo = ({ imdbId, movieId, movie }) => {
 	};
 
 	return (
-		<div className="flex justify-between gap-5 border rounded-md p-3 shadow-sm">
+		<div className="flex justify-between gap-5 border rounded-md p-3 shadow-xs">
 			<div className="flex gap-4 items-center">
 				<Avatar className={"cursor-pointer h-[50px] w-[50px]"}>
 					<AvatarImage src={uploadedUserProfile} alt="user" />

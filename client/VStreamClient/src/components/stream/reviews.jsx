@@ -65,7 +65,6 @@ const MovieReviews = ({ imdbId, setTotalReviews }) => {
 
 	return (
 		<div className="py-10">
-			<Separator className={"my-4"} />
 			<div className="flex gap-5 justify-between items-center">
 				<h3 className="text-xl font-semibold text-muted-foreground">Reviews</h3>
 				<Button size="sm" className={"text-sm"} onClick={() => setWriteReview(true)}>

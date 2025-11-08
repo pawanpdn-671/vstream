@@ -4,11 +4,15 @@ import { ADMIN_ROLE } from "@/utils/constants";
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const AdminRoute = () => {
+const AdminRoute = ({ children }) => {
 	const { isLoading, isAuthenticated, hasFetchedProfile, user } = useAuthStore();
 
 	if (isLoading || !hasFetchedProfile) return <FallbackComponent />;
-	return isAuthenticated && user?.role === ADMIN_ROLE ? <Outlet /> : <Navigate to={"/login"} replace />;
+	if (!isAuthenticated || user?.role !== ADMIN_ROLE) {
+		return <Navigate to={"/login"} replace />;
+	}
+
+	return children;
 };
 
 export default AdminRoute;
