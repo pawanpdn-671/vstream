@@ -10,11 +10,15 @@ import { toast } from "sonner";
 import { movieApi } from "@/service/movieApi";
 import DeleteConfirmationModal from "./delete-modal";
 import { MODAL_TITLE_INFO } from "@/utils/constants";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Link, useNavigate } from "react-router-dom";
 
 const MoviesListItem = ({ movie }) => {
 	const [updateMovie, setUpdateMovie] = useState(false);
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
+	const { user } = useAuthStore();
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 	const { movieHandler, isPending } = useAddUpdateMovie("update");
 	const { mutate: deleteMovieHandler } = useMutation({ mutationFn: movieApi.deleteMovie });
 
@@ -53,21 +57,40 @@ const MoviesListItem = ({ movie }) => {
 			<Item variant="outline" key={movie._id} className="shadow-sm items-start">
 				<ItemContent>
 					<div className="flex gap-4">
-						<img src={movie.poster_path} className="h-[120px]" alt={movie.title} />
+						<img
+							src={movie.poster_path}
+							className="h-[120px] w-max cursor-pointer"
+							onClick={() => navigate(`/stream/${movie?.imdb_id}`)}
+							alt={movie.title}
+						/>
 						<div>
-							<ItemTitle className={"text-gradient text-lg"}>{movie.title}</ItemTitle>
+							<Link to={`/stream/${movie?.imdb_id}`}>
+								<ItemTitle className={"text-gradient text-lg"}>{movie.title}</ItemTitle>
+							</Link>
 							<ItemDescription className="line-clamp-2 mt-2">{movie?.plot}</ItemDescription>
 						</div>
 					</div>
 				</ItemContent>
-				<ItemActions>
-					<Button variant="outline" size="icon" onClick={() => setUpdateMovie(true)}>
-						<SquarePen className="text-green-600" />
-					</Button>
-					<Button variant="outline" size="icon" onClick={() => setOpenDeleteModal(true)}>
-						<Trash className="text-destructive" />
-					</Button>
-				</ItemActions>
+				{user?.role === "ADMIN" && (
+					<ItemActions>
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={() => {
+								setUpdateMovie(true);
+							}}>
+							<SquarePen className="text-green-600" />
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={() => {
+								setOpenDeleteModal(true);
+							}}>
+							<Trash className="text-destructive" />
+						</Button>
+					</ItemActions>
+				)}
 				{updateMovie && (
 					<UpdateMovieFields
 						movie={movie}

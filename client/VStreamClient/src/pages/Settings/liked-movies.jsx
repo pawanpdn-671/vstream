@@ -1,9 +1,6 @@
-import { movieApi } from "@/service/movieApi";
-import { APP_EMPTY_MESSAGES, APP_ERROR_MESSAGES } from "@/utils/constants";
-import { parseError } from "@/utils/parse-error";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { EmptyResult } from "../empty-result";
+import { EmptyResult } from "@/components/empty-result";
+import MoviesListTabContent from "@/components/settings/movies-list";
+import MoviesListItem from "@/components/settings/movies-list-item";
 import {
 	Pagination,
 	PaginationContent,
@@ -12,28 +9,30 @@ import {
 	PaginationLink,
 	PaginationNext,
 	PaginationPrevious,
-} from "../shared/pagination";
-import { Skeleton } from "../shared/skeleton";
-import MoviesListItem from "./movies-list-item";
+} from "@/components/shared/pagination";
+import { userApi } from "@/service/userApi";
+import { APP_EMPTY_MESSAGES, APP_ERROR_MESSAGES } from "@/utils/constants";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-const MoviesListTabContent = () => {
+const LikedMovies = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 	const {
-		data: movies,
+		data: likedMovies,
 		isLoading,
 		isError,
 		error,
 	} = useQuery({
-		queryKey: ["manage-movies-list", currentPage],
-		queryFn: () => movieApi.getMovies({ pageParam: currentPage, search: "", genre: "" }),
+		queryKey: ["liked-movies", currentPage],
+		queryFn: () => userApi.getLikedMovies({ pageParam: currentPage }),
 	});
 
 	useEffect(() => {
-		if (movies && movies.data) {
-			setTotalPages(movies.totalPages || 1);
+		if (likedMovies && likedMovies.data) {
+			setTotalPages(likedMovies.totalPages || 1);
 		}
-	}, [movies]);
+	}, [likedMovies]);
 
 	const handlePageChange = (page) => {
 		if (page >= 1 && page <= totalPages) {
@@ -45,8 +44,8 @@ const MoviesListTabContent = () => {
 		return (
 			<div className="mt-10 text-center">
 				<EmptyResult
-					title={APP_ERROR_MESSAGES.MOVIES.TITLE}
-					icon={APP_ERROR_MESSAGES.MOVIES.ICON}
+					title={APP_ERROR_MESSAGES.LIKED_MOVIES.TITLE}
+					icon={APP_ERROR_MESSAGES.LIKED_MOVIES.ICON}
 					description={parseError(error)}
 					iconColor={"destructive"}
 					noAction={true}
@@ -59,14 +58,14 @@ const MoviesListTabContent = () => {
 		<div className="flex w-full flex-col gap-4 pb-10">
 			{isLoading ? (
 				<MoviesListTabContent.Skeleton />
-			) : movies?.data?.length > 0 ? (
-				movies.data.map((movie) => <MoviesListItem key={movie._id} movie={movie} />)
+			) : likedMovies?.data?.length > 0 ? (
+				likedMovies.data.map((movie) => <MoviesListItem key={movie._id} movie={movie} />)
 			) : (
 				<div className="mt-10 text-center">
 					<EmptyResult
-						title={APP_EMPTY_MESSAGES.MOVIES.TITLE}
-						description={APP_EMPTY_MESSAGES.MOVIES.DESCRIPTION}
-						icon={APP_EMPTY_MESSAGES.MOVIES.ICON}
+						title={APP_EMPTY_MESSAGES.LIKED_MOVIES.TITLE}
+						description={APP_EMPTY_MESSAGES.LIKED_MOVIES.DESCRIPTION}
+						icon={APP_EMPTY_MESSAGES.LIKED_MOVIES.ICON}
 						noAction={true}
 					/>
 				</div>
@@ -118,19 +117,4 @@ const MoviesListTabContent = () => {
 	);
 };
 
-export default MoviesListTabContent;
-
-MoviesListTabContent.Skeleton = function MoviesListSkeleton() {
-	return (
-		<>
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-			<Skeleton className={"w-full h-32"} />
-		</>
-	);
-};
+export default LikedMovies;

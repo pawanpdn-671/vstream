@@ -10,4 +10,6 @@ export const userApi = {
 	changePassword: (payload) => api.post("/me/change_password", payload),
 	getBookmarkedMovies: () => api.get("/me/bookmarked_movies"),
 	toggleBookmarkMovie: ({ id }) => api.post(`/bookmark/${id}`),
+	getLikedMovies: ({ pageParam }) => api.get("/me/liked_movies", { params: { page: pageParam } }),
+	getUserReviews: ({ pageParam }) => api.get("/me/reviews", { params: { page: pageParam } }),
 };

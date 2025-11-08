@@ -1,4 +1,13 @@
-import { Clapperboard, LayoutDashboard, MessageSquareText, TriangleAlert, UserRoundCog } from "lucide-react";
+import {
+	Clapperboard,
+	HeartPlus,
+	LayoutDashboard,
+	MessageSquareHeart,
+	MessageSquareText,
+	ThumbsUp,
+	TriangleAlert,
+	UserRoundCog,
+} from "lucide-react";
 
 export const APP_EMPTY_MESSAGES = {
 	MOVIES: {
@@ -15,6 +24,11 @@ export const APP_EMPTY_MESSAGES = {
 		DESCRIPTION: "Be the first one to add a review.",
 		ICON: MessageSquareText,
 	},
+	LIKED_MOVIES: {
+		TITLE: "No Liked Movies Found.",
+		DESCRIPTION: "Watch and give a like, to see your liked movies here.",
+		ICON: ThumbsUp,
+	},
 };
 
 export const APP_ERROR_MESSAGES = {
@@ -28,6 +42,10 @@ export const APP_ERROR_MESSAGES = {
 	},
 	GROQ_RESPONSE: {
 		TITLE: "Failed to get the movies. Please try again.",
+		ICON: TriangleAlert,
+	},
+	LIKED_MOVIES: {
+		TITLE: "Failed to get Liked Movies.",
 		ICON: TriangleAlert,
 	},
 };
@@ -82,6 +100,20 @@ export const SETTINGS_MENU_ITEMS = [
 		value: "profile",
 		icon: UserRoundCog,
 		path: "/settings",
+		for: "user",
+	},
+	{
+		name: "Liked Movies",
+		value: "liked_movies",
+		icon: HeartPlus,
+		path: "/settings/liked-movies",
+		for: "user",
+	},
+	{
+		name: "Your Comments",
+		value: "profile",
+		icon: MessageSquareHeart,
+		path: "/settings/comments",
 		for: "user",
 	},
 	{

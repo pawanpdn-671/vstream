@@ -38,6 +38,14 @@ export const privateRoutes = [
 				component: lazy(() => import("@/pages/Settings/profile")),
 			},
 			{
+				path: "liked-movies",
+				component: lazy(() => import("@/pages/Settings/liked-movies")),
+			},
+			{
+				path: "comments",
+				component: lazy(() => import("@/pages/Settings/comments")),
+			},
+			{
 				path: "manage-movies",
 				component: () =>
 					ProtectedAdminRouteWrapper({
