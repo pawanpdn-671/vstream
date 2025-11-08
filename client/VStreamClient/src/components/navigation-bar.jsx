@@ -8,7 +8,7 @@ import { EXCLUDE_SEARCHBAR_ROUTES } from "@/utils/constants";
 
 const NavigationBar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
-	const { setSearchQuery } = useMovieStore();
+	const { setSearchQuery, setSearchByGenre } = useMovieStore();
 	const location = useLocation();
 	const isExcludeSearchbarRoute = EXCLUDE_SEARCHBAR_ROUTES.some((route) => location.pathname?.includes(route));
 
@@ -35,7 +35,12 @@ const NavigationBar = () => {
 
 					{!isExcludeSearchbarRoute && (
 						<div className="w-[400px] ml-auto">
-							<SearchBar handleSearch={setSearchQuery} placeholder="Search Movie..." />
+							<SearchBar
+								handleSearch={setSearchQuery}
+								handleGenre={setSearchByGenre}
+								placeholder="Search Movie..."
+								isScrolled={isScrolled}
+							/>
 						</div>
 					)}
 

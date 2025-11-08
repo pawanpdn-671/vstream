@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -50,10 +51,15 @@ func GetMovies(client *mongo.Client) gin.HandlerFunc {
 		}
 
 		if genre != "" {
-			filter["genre.genre_name"] = bson.M{
-				"$regex":   regexp.QuoteMeta(genre),
-				"$options": "i",
+			genres := strings.Split(genre, ",")
+			regexes := make([]interface{}, 0, len(genres))
+			for _, g := range genres {
+				regexes = append(regexes, bson.Regex{
+					Pattern: regexp.QuoteMeta(strings.TrimSpace(g)),
+					Options: "i",
+				})
 			}
+			filter["genre.genre_name"] = bson.M{"$in": regexes}
 		}
 
 		// MongoDB find options for pagination
