@@ -30,8 +30,6 @@ const GetMoviePage = () => {
 		mutationFn: movieApi.getUserStoryBasedMovies,
 	});
 
-	console.log(data);
-
 	const handleProcess = () => {
 		if (!userStoryText?.trim()) {
 			toast.error("Write down story to start the process.");
@@ -55,38 +53,48 @@ const GetMoviePage = () => {
 
 	return (
 		<PageWrapper>
-			<TitleWithLine title={PAGE_TITLE.GET_MOVIE} includeLine />
-			<div className="pt-10">
-				<div className="flex gap-10">
-					<div className="shrink-0">
-						<div className="w-[400px] gap-2">
-							<Label htmlFor="user-story-field">Write down the story below</Label>
-							<Textarea
-								id="user-story-field"
-								value={userStoryText}
-								onChange={(e) => setUserStoryText(e.target.value)}
-								placeholder="Type your story here."
-								className={"mt-2 resize-none min-h-[150px] max-h-[200px] overflow-y-auto"}
-							/>
-							<div className="mt-5 flex justify-end gap-2">
-								<Button disabled={isPending} variant="ghost" onClick={() => setUserStoryText("")}>
-									Reset
-								</Button>
-								<Button onClick={handleProcess} disabled={isPending}>
-									{isPending ? <Spinner className={"text-orange-100 size-5"} /> : <Sparkles size={18} />}
-									{isPending ? "Processing..." : "Start Process"}
-								</Button>
+			<div class="h-full">
+				<div class="absolute inset-0">
+					<div class="relative h-full w-full [&>div]:absolute [&>div]:inset-0 [&>div]:bg-[radial-gradient(circle_at_center,#FF7112,transparent)] [&>div]:opacity-30 [&>div]:mix-blend-multiply">
+						<div></div>
+					</div>
+				</div>
+
+				<div class="relative z-10 pt-2">
+					<TitleWithLine title={PAGE_TITLE.GET_MOVIE} includeLine />
+					<div className="pt-10">
+						<div className="flex gap-10">
+							<div className="shrink-0">
+								<div className="w-[400px] gap-2">
+									<Label htmlFor="user-story-field">Describe the story below</Label>
+									<Textarea
+										id="user-story-field"
+										value={userStoryText}
+										onChange={(e) => setUserStoryText(e.target.value)}
+										placeholder="Type your story here."
+										className={"mt-2 resize-none min-h-[150px] max-h-[200px] overflow-y-auto"}
+									/>
+									<div className="mt-5 flex justify-end gap-2">
+										<Button disabled={isPending} variant="ghost" onClick={() => setUserStoryText("")}>
+											Reset
+										</Button>
+										<Button onClick={handleProcess} disabled={isPending}>
+											{isPending ? <Spinner className={"text-orange-100 size-5"} /> : <Sparkles size={18} />}
+											{isPending ? "Processing..." : "Start Process"}
+										</Button>
+									</div>
+								</div>
+							</div>
+							<div className="flex-1">
+								{isPending ? (
+									<GetMoviePage.Skeleton />
+								) : showProcessedResult ? (
+									<ProcessedMoviesFeed data={data} isError={isError} error={error} />
+								) : (
+									<></>
+								)}
 							</div>
 						</div>
-					</div>
-					<div className="flex-1">
-						{isPending ? (
-							<GetMoviePage.Skeleton />
-						) : showProcessedResult ? (
-							<ProcessedMoviesFeed movies={data?.movies} isError={isError} error={error} />
-						) : (
-							<></>
-						)}
 					</div>
 				</div>
 			</div>

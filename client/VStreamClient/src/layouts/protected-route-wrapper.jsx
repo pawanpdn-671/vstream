@@ -5,7 +5,7 @@ import { Suspense } from "react";
 export const ProtectedAdminRouteWrapper = (LazyComponent) => {
 	return () => (
 		<AdminRoute>
-			<Suspense fallback={<FallbackComponent />}>
+			<Suspense fallback={<FallbackComponent type="component" />}>
 				<LazyComponent />
 			</Suspense>
 		</AdminRoute>
