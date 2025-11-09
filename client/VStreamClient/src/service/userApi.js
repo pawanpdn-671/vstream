@@ -12,4 +12,5 @@ export const userApi = {
 	toggleBookmarkMovie: ({ id }) => api.post(`/bookmark/${id}`),
 	getLikedMovies: ({ pageParam }) => api.get("/me/liked_movies", { params: { page: pageParam } }),
 	getUserReviews: ({ pageParam }) => api.get("/me/reviews", { params: { page: pageParam } }),
+	getExpertHelp: (payload) => api.post("/movie/expert-help", payload),
 };

@@ -53,14 +53,14 @@ const GetMoviePage = () => {
 
 	return (
 		<PageWrapper>
-			<div class="h-full">
-				<div class="absolute inset-0">
-					<div class="relative h-full w-full [&>div]:absolute [&>div]:inset-0 [&>div]:bg-[radial-gradient(circle_at_center,#FF7112,transparent)] [&>div]:opacity-30 [&>div]:mix-blend-multiply">
+			<div className="h-full">
+				<div className="absolute inset-0">
+					<div className="relative h-full w-full [&>div]:absolute [&>div]:inset-0 [&>div]:bg-[radial-gradient(circle_at_center,#FF7112,transparent)] [&>div]:opacity-30 [&>div]:mix-blend-multiply">
 						<div></div>
 					</div>
 				</div>
 
-				<div class="relative z-10 pt-2">
+				<div className="relative z-10 pt-2">
 					<TitleWithLine title={PAGE_TITLE.GET_MOVIE} includeLine />
 					<div className="pt-10">
 						<div className="flex gap-10">

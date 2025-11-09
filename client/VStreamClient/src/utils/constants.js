@@ -145,3 +145,10 @@ export const MODAL_TITLE_INFO = {
 		},
 	},
 };
+
+export const SUGGESTED_PROMPTS = [
+	"Recommend me a movie for a rainy night",
+	"Top sci-fi movies of the 2010s",
+	"Best films starring [actor name]",
+	"Explain the ending of Inception",
+];
