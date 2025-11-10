@@ -49,8 +49,24 @@ func LoginUser(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
-		c.SetCookie("access_token", token, int(utils.TokenExpirationTime.Seconds()), "/", "", false, true)
-		c.SetCookie("refresh_token", refreshToken, int(utils.RefreshTokenExpirationTime.Seconds()), "/", "", false, true)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "access_token",
+			Value:    token,
+			Path:     "/",
+			MaxAge:   int(utils.TokenExpirationTime.Seconds()),
+			Secure:   true,
+			HttpOnly: true,
+			SameSite: http.SameSiteNoneMode,
+		})
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "refresh_token",
+			Value:    refreshToken,
+			Path:     "/",
+			MaxAge:   int(utils.RefreshTokenExpirationTime.Seconds()),
+			Secure:   true,
+			HttpOnly: true,
+			SameSite: http.SameSiteNoneMode,
+		})
 
 		c.JSON(http.StatusOK, models.UserResponse{
 			Email:  foundUser.Email,
