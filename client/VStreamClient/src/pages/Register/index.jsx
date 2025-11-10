@@ -5,8 +5,8 @@ import AuthLayout from "@/layouts/auth-layout";
 const RegisterPage = () => {
 	return (
 		<AuthLayout>
-			<div className="py-10 px-5">
-				<div className="w-[380px] mx-auto">
+			<div className="bg-white lg:bg-transparent mt-16 lg:mt-0 rounded-lg xs:rounded-none pt-4 pb-8 xs:py-10 px-3 xs:px-5">
+				<div className="w-full xs:w-[380px] mx-auto">
 					<RegisterForm />
 				</div>
 			</div>
