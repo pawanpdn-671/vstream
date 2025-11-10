@@ -20,8 +20,8 @@ const MoviesContainer = ({ movies, errorMessage, isError, isLoading, isFetching,
 	}
 
 	return (
-		<div className="py-10">
-			<div className="grid grid-cols-4 gap-8 pb-10">
+		<div className="py-6 xs:py-10">
+			<div className="grid xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 xl:gap-8 pb-5 xs:pb-10">
 				{movies && movies?.length > 0 && movies?.map((movie) => <Movie key={movie._id} movie={movie} />)}
 				{isFetching && <HomePage.Skeleton />}
 			</div>

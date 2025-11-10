@@ -4,7 +4,7 @@ import { Skeleton } from "../shared/skeleton";
 const PopularWords = ({ isLoading, data }) => {
 	return (
 		<div className="border p-3 rounded-sm">
-			<h4 className="w-max text-base font-medium text-gradient">What Others Say About This Movie</h4>
+			<h4 className="w-max text-xs xs:text-base font-medium text-gradient">What Others Say About This Movie</h4>
 			<div className="mt-4 flex flex-wrap gap-3">
 				{isLoading ? (
 					<>
@@ -18,7 +18,7 @@ const PopularWords = ({ isLoading, data }) => {
 					data?.map((topic, i) => (
 						<span
 							key={i}
-							className="capitalize rounded-sm inline-block py-1 px-2 text-xs font-medium bg-linear-to-tr from-orange-50 via-orange-50 to-red-100 dark:from-orange-900 dark:via-orange-950 dark:to-black shadow-sm">
+							className="capitalize rounded-sm inline-block py-1 px-2 text-[10px] xs:text-xs font-medium bg-linear-to-tr from-orange-50 via-orange-50 to-red-100 dark:from-orange-900 dark:via-orange-950 dark:to-black shadow-sm">
 							{topic}
 						</span>
 					))

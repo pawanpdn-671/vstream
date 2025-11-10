@@ -56,7 +56,7 @@ const MoviesListTabContent = () => {
 	}
 
 	return (
-		<div className="flex w-full flex-col gap-4 pb-10">
+		<div className="flex w-full pt-2 flex-col gap-4 pb-10">
 			{isLoading ? (
 				<MoviesListTabContent.Skeleton />
 			) : movies?.data?.length > 0 ? (

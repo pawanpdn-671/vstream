@@ -78,7 +78,7 @@ const AddMovieInterface = () => {
 		<div className="pt-5">
 			<form id="update-movie" onSubmit={handleSubmit(onSubmit)} className="w-full pb-2">
 				<FieldGroup>
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid mdl:grid-cols-2 gap-4">
 						<Controller
 							name="imdbId"
 							control={control}
@@ -119,7 +119,7 @@ const AddMovieInterface = () => {
 						)}
 					/>
 
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid mdl:grid-cols-2 gap-4">
 						<Controller
 							name="posterPath"
 							control={control}
@@ -157,7 +157,7 @@ const AddMovieInterface = () => {
 									<FieldLabel>Genre</FieldLabel>
 									<FieldDescription>Select movie genres from below</FieldDescription>
 
-									<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border">
+									<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border content-start contain-[layout_paint]">
 										{isLoading ? (
 											<RegisterPage.GenreSkeleton />
 										) : genres && genres?.length > 0 ? (

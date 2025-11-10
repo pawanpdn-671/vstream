@@ -66,8 +66,11 @@ const MovieReviews = ({ imdbId, setTotalReviews }) => {
 	return (
 		<div className="py-10">
 			<div className="flex gap-5 justify-between items-center">
-				<h3 className="text-xl font-semibold text-muted-foreground">Reviews</h3>
-				<Button size="sm" className={"text-sm"} onClick={() => setWriteReview(true)}>
+				<h3 className="text-lg xs:text-xl font-semibold text-muted-foreground">Reviews</h3>
+				<Button
+					size="sm"
+					className={"text-xs font-normal xs:font-medium xs:text-sm"}
+					onClick={() => setWriteReview(true)}>
 					Write Review
 				</Button>
 			</div>

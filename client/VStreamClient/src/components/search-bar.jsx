@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./shared/popover";
 import { useGenres } from "@/hooks/movies/useGenres";
 import { Label } from "./shared/label";
 import { Checkbox } from "./shared/checkbox";
+import { Separator } from "./shared/separator";
 
 const SearchBar = ({ handleSearch, placeholder, noButton, handleGenre, isScrolled }) => {
 	const [localQuery, setLocalQuery] = useState("");
@@ -31,9 +32,10 @@ const SearchBar = ({ handleSearch, placeholder, noButton, handleGenre, isScrolle
 		<GradientBorder radius="rounded-full">
 			<form onSubmit={handleSubmit} className="h-max flex items-center">
 				<input
+					id="search-movies"
 					value={localQuery}
 					onChange={(e) => setLocalQuery(e.target.value)}
-					className={`pl-3 rounded-3xl border-none outline-none text-sm flex-1`}
+					className={`pl-3 rounded-3xl border-none outline-none text-sm w-full`}
 					placeholder={placeholder}
 				/>
 				<Popover open={open} onOpenChange={setOpen}>
@@ -43,18 +45,25 @@ const SearchBar = ({ handleSearch, placeholder, noButton, handleGenre, isScrolle
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent
-						align="center"
+						align="end"
 						sideOffset={10}
-						className={`w-[500px] ${isScrolled ? "bg-background/90 backdrop-blur-sm" : ""}`}>
+						alignOffset={-86}
+						className={`w-[90vw] sm:w-[500px] ${isScrolled ? "bg-background/90 backdrop-blur-sm" : ""}`}>
 						<div>
-							<h4 className="font-medium text-muted-foreground">Search Movie By Genre</h4>
-							<div className="mt-5 flex flex-wrap gap-4">
+							<h4 className="text-xs sm:text-sm md:text-base font-medium pb-2 text-muted-foreground">
+								Search Movie By Genre
+							</h4>
+							<Separator />
+							<div className="py-3 flex flex-wrap gap-3 md:gap-3.5 lg:gap-4 max-h-[50vh] overflow-y-auto ">
 								{genres?.map((genre) => {
 									const checked = selectedGenres?.includes(genre.genre_name);
 									return (
-										<Label key={genre.genre_id} className="flex items-center gap-2 cursor-pointer">
+										<Label
+											key={genre.genre_id}
+											className="text-xs sm:text-sm flex items-center gap-1.5 md:gap-2 cursor-pointer">
 											<Checkbox
 												checked={checked}
+												className={"size-3.5 md:size-4"}
 												onCheckedChange={(isChecked) => {
 													if (isChecked) {
 														setSelectedGenres((prev) => [...prev, genre.genre_name]);
@@ -70,8 +79,9 @@ const SearchBar = ({ handleSearch, placeholder, noButton, handleGenre, isScrolle
 									);
 								})}
 							</div>
-							<div className="mt-4 flex justify-end gap-2">
-								<Button variant={"ghost"} onClick={(e) => handleGenreSearch(e, "reset")}>
+							<Separator />
+							<div className="mt-3 flex justify-end gap-2">
+								<Button variant={"ghost"} size="sm" onClick={(e) => handleGenreSearch(e, "reset")}>
 									<RotateCw size={16} />
 									Reset
 								</Button>

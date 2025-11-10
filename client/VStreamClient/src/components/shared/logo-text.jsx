@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import React from "react";
 
-const LogoText = ({ noText = false, size = "lg", textSize = "xl", textColor }) => {
+const LogoText = ({ noText = false, size = "lg", textSize = "xl", textColor, noTextInMobile }) => {
 	const sizeOptions = {
 		sm: "w-4 h-4",
 		md: "w-6 h-6",
@@ -13,7 +13,14 @@ const LogoText = ({ noText = false, size = "lg", textSize = "xl", textColor }) =
 			<div className={`${sizeOptions[size]} bg-linear-to-br bg-primary rounded-lg flex items-center justify-center`}>
 				<Sparkles className="w-5 h-5 text-white" />
 			</div>
-			{!noText && <span className={`text-${textSize} font-bold font-poppins text-${textColor}`}>VStream</span>}
+			{!noText && (
+				<span
+					className={`${
+						noTextInMobile ? "hidden sm:inline-block" : ""
+					} text-${textSize} font-bold font-poppins text-${textColor}`}>
+					VStream
+				</span>
+			)}
 		</div>
 	);
 };

@@ -5,7 +5,7 @@ import { getInitials } from "@/lib/utils";
 import { ImagePlus } from "lucide-react";
 import UploadAvatarModal from "./upload-avatar-modal";
 
-const UserProfile = () => {
+const UserProfile = ({ hiddenUpload }) => {
 	const [openUploadProfileModal, setOpenUploadProfileModal] = useState(false);
 	const [cacheBuster, setCacheBuster] = useState(Date.now());
 	const { user } = useAuthStore();
@@ -22,7 +22,7 @@ const UserProfile = () => {
 			<ImagePlus
 				onClick={() => setOpenUploadProfileModal(true)}
 				size={24}
-				className="absolute top-0 right-0 cursor-pointer bg-background"
+				className={`${hiddenUpload ? "hidden md:block" : ""} absolute top-0 right-0 cursor-pointer bg-background`}
 				color={"red"}
 			/>
 			{openUploadProfileModal && (

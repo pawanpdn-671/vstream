@@ -1,14 +1,17 @@
-import ReactPlayer from "react-player";
-import GradientBorder from "../shared/gradient-border";
-import MovieReviews from "./reviews";
-import UploadedInfo from "./uploaded-info";
-import { Skeleton } from "../shared/skeleton";
-import { useState } from "react";
-import { format, isAfter, isValid, parseISO } from "date-fns";
-import PopularWords from "./popular-words";
-import { useQuery } from "@tanstack/react-query";
 import { reviewApi } from "@/service/reviewApi";
+import { useQuery } from "@tanstack/react-query";
+import { format, isAfter, isValid, parseISO } from "date-fns";
+import { ChevronsUp } from "lucide-react";
+import { useState } from "react";
+import YouTube from "react-youtube";
+import { Button } from "../shared/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "../shared/drawer";
+import GradientBorder from "../shared/gradient-border";
+import { Skeleton } from "../shared/skeleton";
+import PopularWords from "./popular-words";
+import MovieReviews from "./reviews";
 import SimilarMoviesGallery from "./similar-movies-gallery";
+import UploadedInfo from "./uploaded-info";
 
 const StreamMovie = ({ movie }) => {
 	const [playerReady, setPlayerReady] = useState(false);
@@ -25,14 +28,14 @@ const StreamMovie = ({ movie }) => {
 	const isRealDate = date && isValid(date) && isAfter(date, new Date("1900-01-01"));
 
 	return (
-		<div className="flex gap-10">
+		<div className="flex flex-col lg:flex-row gap-10">
 			<div className="flex-1 basis-[60%] flex flex-col">
-				<div className="aspect-video overflow-hidden w-full rounded-md">
-					<ReactPlayer
-						url={`https://www.youtube.com/watch?v=${movie.youtube_id}`}
-						playing={false}
-						width={"100%"}
-						height={"100%"}
+				<div className="react-player-container aspect-video overflow-hidden w-full rounded-md">
+					<YouTube
+						videoId={movie?.youtube_id}
+						id={movie?._id}
+						className="w-full h-full"
+						iframeClassName="w-full h-full"
 						controls
 						onReady={() => setPlayerReady(true)}
 					/>
@@ -47,14 +50,36 @@ const StreamMovie = ({ movie }) => {
 				<div className="mt-5">
 					<UploadedInfo imdbId={movie?.imdb_id} movieId={movie?._id} movie={movie} />
 				</div>
-				<div className="mt-4">
+				<div>
 					{totalReviews >= 5 && !!movie?.imdb_id && (
-						<PopularWords isLoading={isloading} data={data?.popular_words} />
+						<div className="mt-4">
+							<PopularWords isLoading={isloading} data={data?.popular_words} />
+						</div>
 					)}
-					<MovieReviews imdbId={movie?.imdb_id} setTotalReviews={setTotalReviews} />
+					<div className="block mt-4 lg:hidden">
+						<Drawer>
+							<DrawerTrigger asChild>
+								<Button variant="outline" className={"w-full text-sm h-auto py-2 rounded-3xl"}>
+									Open Reviews
+								</Button>
+							</DrawerTrigger>
+							<DrawerContent className={"overflow-y-auto! touch-auto! max-h-[80vh]! md:max-h-[70vh]!"}>
+								<p className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-muted-foreground font-medium">
+									Pull Down to Close
+									<ChevronsUp size={16} className="ml-2 inline-block animate-bounce" />
+								</p>
+								<div className="px-3 sm:px-0 mx-auto w-full max-w-lg">
+									<MovieReviews imdbId={movie?.imdb_id} setTotalReviews={setTotalReviews} />
+								</div>
+							</DrawerContent>
+						</Drawer>
+					</div>
+					<div className="hidden lg:block">
+						<MovieReviews imdbId={movie?.imdb_id} setTotalReviews={setTotalReviews} />
+					</div>
 				</div>
 			</div>
-			<div className="w-[400px] flex flex-col gap-4">
+			<div className="w-full flex lg:w-[400px] flex-col gap-4">
 				<div className="flex flex-wrap gap-2">
 					{genre?.map((g) => (
 						<span

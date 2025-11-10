@@ -48,12 +48,12 @@ const SimilarMoviesGallery = ({ genre, movieId }) => {
 							<Link to={`/stream/${movie.imdb_id}`}>
 								<div
 									movie={movie}
-									className="flex p-2 group hover:scale-105 duration-200 ease-in-out transition-transform border hover rounded-sm gap-4 shadow-sm">
+									className="flex p-2 group hover:scale-105 duration-200 ease-in-out transition-transform border hover rounded-sm gap-3 xs:gap-4 shadow-sm">
 									<div className="shrink-0 relative">
 										<img
 											src={`https://img.youtube.com/vi/${movie.youtube_id}/default.jpg`}
 											alt={movie?.title}
-											className="aspect-auto rounded-sm w-[120px]"
+											className="aspect-auto rounded-sm w-[100px] xs:w-[120px]"
 										/>
 										<div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
 											<div className="bg-red-500 px-2 py-0.5 rounded-md flex items-center justify-center">
@@ -67,8 +67,8 @@ const SimilarMoviesGallery = ({ genre, movieId }) => {
 										</div>
 									</div>
 									<div className="grow space-y-1.5">
-										<p className="text-sm font-medium">{movie.title}</p>
-										<p className="text-muted-foreground text-xs line-clamp-2">{movie.plot}</p>
+										<p className="text-xs xs:text-sm font-medium">{movie.title}</p>
+										<p className="text-muted-foreground text-[10px] xs:text-xs line-clamp-2">{movie.plot}</p>
 									</div>
 								</div>
 							</Link>

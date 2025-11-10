@@ -82,14 +82,17 @@ export function Footer() {
 				<div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between text-sm text-muted-foreground">
 					<p>&copy; {new Date().getFullYear()} VStream. All rights reserved.</p>
 					<div className="flex gap-6 mt-4 sm:mt-0">
-						<a href="#" className="hover:text-foreground transition-colors">
-							Twitter
+						<a
+							href="https://www.github.com/pawanpdn-671"
+							target={"_blank"}
+							className="hover:text-foreground transition-colors">
+							@PawanPdn
 						</a>
-						<a href="#" className="hover:text-foreground transition-colors">
+						<a
+							href="https://www.github.com/pawanpdn-671/vstream"
+							target={"_blank"}
+							className="hover:text-foreground transition-colors">
 							GitHub
-						</a>
-						<a href="#" className="hover:text-foreground transition-colors">
-							Discord
 						</a>
 					</div>
 				</div>

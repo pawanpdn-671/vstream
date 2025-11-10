@@ -7,7 +7,7 @@ const ManageMovies = () => {
 	return (
 		<div>
 			<Tabs defaultValue="movies">
-				<TabsList>
+				<TabsList className={"w-full mx-auto xs:w-[400px]"}>
 					<TabsTrigger value="movies">Movies</TabsTrigger>
 					<TabsTrigger value="add-movie">Add Movie</TabsTrigger>
 				</TabsList>

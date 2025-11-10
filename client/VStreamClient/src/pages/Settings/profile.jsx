@@ -74,14 +74,14 @@ const ProfileSettingsPage = () => {
 	return (
 		<div className="w-full">
 			<div className="mx-auto">
-				<div className="flex justify-end">
+				<div className="flex pb-4 mdl:pb-0 justify-end">
 					<ChangePasswordModal />
 				</div>
 				<div className="flex justify-center pb-8">
 					<UserProfile />
 				</div>
 				<form id="update-user-form" onSubmit={handleSubmit(onSubmit)}>
-					<FieldGroup className={"grid grid-cols-2 gap-4"}>
+					<FieldGroup className={"grid mdl:grid-cols-2 gap-4"}>
 						<Controller
 							name="firstName"
 							control={control}
@@ -126,7 +126,7 @@ const ProfileSettingsPage = () => {
 									<FieldLabel>Favourite Genres</FieldLabel>
 									<FieldDescription>Select your favourite genres below:</FieldDescription>
 
-									<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border">
+									<div className="mt-2 flex flex-wrap gap-4 max-h-40 overflow-y-auto px-2 py-3 rounded-md border content-start contain-[layout_paint]">
 										{isLoading && <RegisterPage.GenreSkeleton />}
 										{!isLoading && genres?.length > 0 ? (
 											genres.map((genre) => {

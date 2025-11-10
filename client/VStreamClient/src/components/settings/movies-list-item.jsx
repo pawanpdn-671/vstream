@@ -63,19 +63,46 @@ const MoviesListItem = ({ movie }) => {
 							onClick={() => navigate(`/stream/${movie?.imdb_id}`)}
 							alt={movie.title}
 						/>
-						<div>
+						<div className="flex flex-col">
 							<Link to={`/stream/${movie?.imdb_id}`}>
-								<ItemTitle className={"text-gradient text-lg"}>{movie.title}</ItemTitle>
+								<ItemTitle className={"text-gradient text-sm xs:text-base mdl:text-lg"}>
+									{movie.title}
+								</ItemTitle>
 							</Link>
-							<ItemDescription className="line-clamp-2 mt-2">{movie?.plot}</ItemDescription>
+							<ItemDescription className="text-[10px] xs:text-xs mdl:text-sm line-clamp-2 mt-2">
+								{movie?.plot}
+							</ItemDescription>
+							{user?.role === "ADMIN" && (
+								<ItemActions className={"mt-auto pt-2 justify-end flex xs:hidden"}>
+									<Button
+										variant="outline"
+										size="icon"
+										className={"h-auto p-1 w-auto mdl:p-2"}
+										onClick={() => {
+											setUpdateMovie(true);
+										}}>
+										<SquarePen className="text-green-600" />
+									</Button>
+									<Button
+										variant="outline"
+										size="icon"
+										className={"h-auto p-1 w-auto mdl:p-2"}
+										onClick={() => {
+											setOpenDeleteModal(true);
+										}}>
+										<Trash className="text-destructive" />
+									</Button>
+								</ItemActions>
+							)}
 						</div>
 					</div>
 				</ItemContent>
 				{user?.role === "ADMIN" && (
-					<ItemActions>
+					<ItemActions className={"hidden xs:flex"}>
 						<Button
 							variant="outline"
 							size="icon"
+							className={"h-auto p-1 w-auto mdl:p-2"}
 							onClick={() => {
 								setUpdateMovie(true);
 							}}>
@@ -84,6 +111,7 @@ const MoviesListItem = ({ movie }) => {
 						<Button
 							variant="outline"
 							size="icon"
+							className={"h-auto p-1 w-auto mdl:p-2"}
 							onClick={() => {
 								setOpenDeleteModal(true);
 							}}>

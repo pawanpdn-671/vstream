@@ -8,8 +8,8 @@ const PrivateLayout = () => {
 		<>
 			<NavigationBar />
 			<main>
-				<Outlet />
 				<FloatingMovieChat />
+				<Outlet />
 			</main>
 		</>
 	);

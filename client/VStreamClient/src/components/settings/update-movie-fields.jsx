@@ -29,7 +29,7 @@ const UpdateMovieFields = ({ movie, onSubmit, onCancel, isLoading }) => {
 	return (
 		<form id="update-movie" onSubmit={handleSubmit(onSubmit)} className="w-full pb-2">
 			<FieldGroup>
-				<div className="grid grid-cols-2 gap-4">
+				<div className="grid mdl:grid-cols-2 gap-4">
 					<Controller
 						name="title"
 						control={control}
@@ -57,7 +57,7 @@ const UpdateMovieFields = ({ movie, onSubmit, onCancel, isLoading }) => {
 					/>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
+				<div className="grid mdl:grid-cols-2 gap-4">
 					<Controller
 						name="posterPath"
 						control={control}

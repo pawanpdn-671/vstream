@@ -5,24 +5,18 @@ import { Star } from "lucide-react";
 const movies = [
 	{
 		title: "Cinematic Masterpiece",
-		rating: 9.2,
+		rating: 4,
 		reviews: 15420,
-		aiScore: 94,
-		trend: "+12%",
 	},
 	{
 		title: "Epic Adventure",
-		rating: 8.8,
+		rating: 3,
 		reviews: 12890,
-		aiScore: 89,
-		trend: "+8%",
 	},
 	{
 		title: "Thrilling Drama",
-		rating: 8.5,
+		rating: 5,
 		reviews: 10240,
-		aiScore: 85,
-		trend: "+5%",
 	},
 ];
 
@@ -60,23 +54,6 @@ export function AIShowcase() {
 									<div className="flex items-center justify-between">
 										<span className="text-sm text-muted-foreground">Reviews Analyzed</span>
 										<span className="font-bold">{movie.reviews.toLocaleString()}</span>
-									</div>
-
-									<div className="flex items-center justify-between">
-										<span className="text-sm text-muted-foreground">AI Score</span>
-										<div className="flex items-center gap-2">
-											<div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-												<div
-													className="h-full bg-linear-to-r from-red-500 to-orange-500 rounded-full"
-													style={{ width: `${movie.aiScore}%` }}
-												/>
-											</div>
-											<span className="font-bold text-sm">{movie.aiScore}%</span>
-										</div>
-									</div>
-
-									<div className="pt-2 border-t border-border">
-										<span className="text-sm text-green-500 font-semibold">{movie.trend} this week</span>
 									</div>
 								</div>
 							</div>

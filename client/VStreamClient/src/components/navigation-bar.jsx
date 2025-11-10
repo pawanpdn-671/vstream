@@ -4,13 +4,13 @@ import ProfileMenu from "./profile";
 import SearchBar from "./search-bar";
 import LogoText from "./shared/logo-text";
 import { useMovieStore } from "@/store/useMovieStore";
-import { EXCLUDE_SEARCHBAR_ROUTES } from "@/utils/constants";
+import { INCLUDE_SEARCHBAR_ROUTES } from "@/utils/constants";
 
 const NavigationBar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
 	const { setSearchQuery, setSearchByGenre } = useMovieStore();
 	const location = useLocation();
-	const isExcludeSearchbarRoute = EXCLUDE_SEARCHBAR_ROUTES.some((route) => location.pathname?.includes(route));
+	const shouldSearchBarInclude = INCLUDE_SEARCHBAR_ROUTES.some((route) => location.pathname?.includes(route));
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -23,18 +23,20 @@ const NavigationBar = () => {
 
 	return (
 		<div className={`fixed z-50 w-full ${isScrolled ? "bg-transparent" : "bg-background"}`}>
-			<div className="max-w-7xl top-0 mx-auto px-5 pt-2">
+			<div className="max-w-7xl top-0 mx-auto px-4 xs:px-5 pt-2">
 				<div
 					className={`flex items-center justify-between transition-all duration-300
 				${
 					isScrolled
-						? "rounded-full bg-background/90 backdrop-blur-sm shadow-md py-2 px-5"
+						? "rounded-full bg-background/90 backdrop-blur-sm shadow-md py-2 px-3"
 						: "rounded-none bg-background py-4"
 				}`}>
-					<LogoText size="md" textSize="md" />
+					<Link to="/home">
+						<LogoText size="md" textSize="md" noTextInMobile />
+					</Link>
 
-					{!isExcludeSearchbarRoute && (
-						<div className="w-[400px] ml-auto">
+					{shouldSearchBarInclude && (
+						<div className="w-full max-w-[400px] ml-2 sm:ml-auto shrink">
 							<SearchBar
 								handleSearch={setSearchQuery}
 								handleGenre={setSearchByGenre}
@@ -44,16 +46,16 @@ const NavigationBar = () => {
 						</div>
 					)}
 
-					<div className="ml-[50px] flex gap-4 items-center">
-						<Link to="/home" className="text-sm text-gradient">
+					<div className="ml-[12px] md:ml-[30px] lg:ml-[50px] flex gap-4 items-center">
+						<Link to="/home" className="hidden lg:inline-block text-sm text-gradient">
 							Home
 						</Link>
 
-						<Link to="/recommended-movies" className="text-sm text-gradient">
+						<Link to="/recommended-movies" className="hidden lg:inline-block text-sm text-gradient">
 							Recommended Movies
 						</Link>
 
-						<Link to="/get-your-movie" className="text-sm text-gradient">
+						<Link to="/get-your-movie" className="hidden lg:inline-block text-sm text-gradient">
 							Get Movie
 						</Link>
 						<ProfileMenu />

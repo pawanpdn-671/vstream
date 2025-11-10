@@ -40,36 +40,52 @@ const UploadedInfo = ({ imdbId, movieId, movie }) => {
 	};
 
 	return (
-		<div className="flex justify-between gap-5 border rounded-md p-3 shadow-xs">
-			<div className="flex gap-4 items-center">
-				<Avatar className={"cursor-pointer h-[50px] w-[50px]"}>
+		<div className="flex justify-between gap-5 border rounded-md p-2 sm:p-3 shadow-xs">
+			<div className="flex gap-2  sm:gap-4 items-center">
+				<Avatar className={"cursor-pointer w-[40px] h-[40px] sm:h-[50px] sm:w-[50px]"}>
 					<AvatarImage src={uploadedUserProfile} alt="user" />
 					<AvatarFallback>{fallbackInitials}</AvatarFallback>
 				</Avatar>
 				<div className="flex flex-col gap-0.5">
-					<span className="text-xs text-muted-foreground">Uploaded By</span>
-					<span className="text-sm font-medium">{uploadedUserName}</span>
+					<span className="text-[10px] sm:text-xs text-muted-foreground">Uploaded By</span>
+					<span className="text-xs sm:text-sm font-medium">{uploadedUserName}</span>
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
 				<div className="flex items-center flex-col relative">
-					<Button variant="ghost" className={"p-1! h-auto w-auto"} onClick={() => handleLikeDislike("like")}>
-						<ThumbsUp size={20} className={`${isLiked ? "fill-orange-400 text-red-500" : "fill-none"}`} />
-						<span>Like</span>
+					<Button
+						variant="ghost"
+						className={"p-1! h-auto w-auto gap-1 sm:gap-2"}
+						onClick={() => handleLikeDislike("like")}>
+						<ThumbsUp
+							size={20}
+							className={`w-[14px]! h-[14px]! xs:w-[16px]! xs:h-[16px]! ${
+								isLiked ? "fill-orange-400 text-red-500" : "fill-none"
+							}`}
+						/>
+						<span className="text-xs xs:text-sm">Like</span>
 					</Button>
 					{movie?.likes && movie?.likes > 0 ? (
-						<span className="text-muted-foreground absolute left-1/2 -translate-x-1/2 bottom-full text-xs font-semibold">
+						<span className="text-muted-foreground absolute left-1/2 -translate-x-1/2 bottom-5 sm:bottom-full text-xs font-semibold">
 							{movie?.likes}
 						</span>
 					) : null}
 				</div>
 				<div className="flex gap-2 items-center relative">
-					<Button variant="ghost" className={"p-1! h-auto w-auto"} onClick={() => handleLikeDislike("dislike")}>
-						<ThumbsDown size={20} className={`${isDisliked ? "fill-orange-400 text-red-500" : "fill-none"}`} />
-						<span>Dislike</span>
+					<Button
+						variant="ghost"
+						className={"p-1! h-auto w-auto gap-1 sm:gap-2"}
+						onClick={() => handleLikeDislike("dislike")}>
+						<ThumbsDown
+							size={20}
+							className={`w-[14px]! h-[14px]! xs:w-[16px]! xs:h-[16px]! ${
+								isDisliked ? "fill-orange-400 text-red-500" : "fill-none"
+							}`}
+						/>
+						<span className="text-xs xs:text-sm">Dislike</span>
 					</Button>
 					{movie?.dislikes && movie?.dislikes > 0 ? (
-						<span className="text-muted-foreground absolute left-1/2 -translate-x-1/2 bottom-full text-xs font-semibold">
+						<span className="text-muted-foreground absolute left-1/2 -translate-x-1/2 bottom-5 sm:bottom-full text-xs font-semibold">
 							{movie?.dislikes}
 						</span>
 					) : null}

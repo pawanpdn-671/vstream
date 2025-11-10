@@ -1,7 +1,7 @@
 import { Button } from "@/components/shared/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/shared/empty";
 
-export function EmptyResult({ icon: Icon, title, description, buttonText, buttonAction, noAction = false, iconColor }) {
+export function EmptyResult({ icon: Icon, title, description, buttonText, buttonAction, noAction = true, iconColor }) {
 	return (
 		<Empty>
 			<EmptyHeader>

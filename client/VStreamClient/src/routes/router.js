@@ -34,7 +34,7 @@ export const privateRoutes = [
 		component: lazy(() => import("@/pages/Settings")),
 		children: [
 			{
-				index: true,
+				path: "profile",
 				component: lazy(() => import("@/pages/Settings/profile")),
 			},
 			{

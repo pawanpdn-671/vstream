@@ -59,7 +59,9 @@ const ChangePasswordModal = () => {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<form onSubmit={handleSubmit(onSubmit)} id="change-password-form">
 				<DialogTrigger asChild>
-					<Button variant="secondary">Change Password</Button>
+					<Button variant="secondary" className={"h-auto px-2 py-1 mdl:px-3 mdl:py-1.5 text-xs mdl:text-sm"}>
+						Change Password
+					</Button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-[425px]">
 					<DialogHeader>

@@ -154,6 +154,11 @@
 	}
 }
 
+@theme {
+	--breakpoint-xs: 500px;
+	--breakpoint-mdl: 850px;
+}
+
 @keyframes slide {
 	0%,
 	100% {
@@ -194,4 +199,13 @@
 	@apply absolute left-[10px] top-[10px] w-4 h-4 rounded-full bg-[#ff3d00];
 	transform-origin: 35px 145px;
 	animation: rotate 2s infinite ease-in-out;
+}
+
+[data-vaul-drawer][data-vaul-drawer-direction="bottom"]::after {
+	height: 0 !important;
+}
+
+.react-player-container {
+	touch-action: pan-y;
+	-webkit-overflow-scrolling: touch !important;
 }

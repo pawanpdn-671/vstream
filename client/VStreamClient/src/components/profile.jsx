@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Bookmark, Moon, Settings, Sun } from "lucide-react";
+import { Bookmark, FileVideoCamera, House, Moon, Settings, Sun, Video } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./shared/avatar";
 import { Button } from "./shared/button";
@@ -17,18 +17,34 @@ const ProfileMenu = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Avatar className={"cursor-pointer h-[40px] w-[40px]"}>
+				<Avatar className={"shrink-0 cursor-pointer h-[40px] w-[40px]"}>
 					<AvatarImage src={profileURL} alt="user" />
 					<AvatarFallback>{fallbackInitials}</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" alignOffset={20} sideOffset={0} className={"min-w-[200px]"}>
+			<DropdownMenuContent align="end" alignOffset={0} sideOffset={0} className={"min-w-[200px]"}>
 				<div className="flex flex-col py-2">
-					<DropdownMenuItem asChild>
-						<Link to="/settings">
+					<DropdownMenuItem asChild className="lg:hidden">
+						<Link to="/home">
 							<Button variant="ghost" className={"w-full justify-start"}>
-								<Settings />
-								Settings
+								<House />
+								Home
+							</Button>
+						</Link>
+					</DropdownMenuItem>
+					<DropdownMenuItem asChild className="lg:hidden">
+						<Link to="/recommended-movies">
+							<Button variant="ghost" className={"w-full justify-start"}>
+								<FileVideoCamera />
+								Recommended Movies
+							</Button>
+						</Link>
+					</DropdownMenuItem>
+					<DropdownMenuItem asChild className="lg:hidden">
+						<Link to="/get-your-movie">
+							<Button variant="ghost" className={"w-full justify-start"}>
+								<Video />
+								Get Movie
 							</Button>
 						</Link>
 					</DropdownMenuItem>
@@ -49,6 +65,14 @@ const ProfileMenu = () => {
 							<Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
 							Toggle Theme
 						</Button>
+					</DropdownMenuItem>
+					<DropdownMenuItem asChild>
+						<Link to="/settings">
+							<Button variant="ghost" className={"w-full justify-start"}>
+								<Settings />
+								Settings
+							</Button>
+						</Link>
 					</DropdownMenuItem>
 				</div>
 			</DropdownMenuContent>

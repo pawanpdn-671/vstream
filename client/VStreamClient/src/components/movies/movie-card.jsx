@@ -72,10 +72,10 @@ const Movie = ({ movie }) => {
 						group-hover:opacity-100 group-hover:translate-y-0 
 						transition-all duration-500 ease-in-out z-10">
 						<CardHeader className="py-5 w-full px-2">
-							<CardTitle className="font-bold mx-auto max-w-full text-3xl bg-linear-to-r from-red-200 via-orange-50 to-orange-200 bg-clip-text text-transparent">
+							<CardTitle className="font-bold mx-auto max-w-full text-2xl xs:text-xl md:text-xl lg:text-3xl xl:text-2xl bg-linear-to-r from-red-200 via-orange-50 to-orange-200 bg-clip-text text-transparent">
 								{movie.title}
 							</CardTitle>
-							<CardDescription className="mt-2 text-sm font-medium text-white line-clamp-4">
+							<CardDescription className="mt-2 font-normal text-xs lg:text-sm lg:font-medium text-smtext-white line-clamp-4">
 								{movie.plot}
 							</CardDescription>
 						</CardHeader>
@@ -92,7 +92,7 @@ const Movie = ({ movie }) => {
 					{bookmarked ? "Bookmark Added" : "Bookmark Removed"}
 				</span>
 
-				<Bookmark size={28} className={`${bookmarked ? "text-red-500 fill-orange-400" : "text-white"}`} />
+				<Bookmark size={28} className={`${bookmarked ? "text-orange-200 fill-white" : "text-white"}`} />
 			</div>
 		</div>
 	);

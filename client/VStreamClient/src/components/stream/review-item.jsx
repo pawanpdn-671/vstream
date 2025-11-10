@@ -49,13 +49,13 @@ const ReviewItem = ({ review, includeBorder, actions }) => {
 
 				<div className="flex-1 min-w-0">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="font-medium text-sm">{reviewerName}</span>
-						<span className="text-xs text-muted-foreground">{timeAgo}</span>
+						<span className="font-medium text-xs xs:text-sm">{reviewerName}</span>
+						<span className="text-[10px] xs:text-xs text-muted-foreground">{timeAgo}</span>
 					</div>
 
 					<div className="mb-2">{renderStars(review?.rating)}</div>
 
-					<p className="text-sm whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
+					<p className="text-xs xs:text-sm whitespace-pre-wrap wrap-break-word">{review?.comment}</p>
 				</div>
 			</div>
 			{actions &&

@@ -14,7 +14,6 @@ import { Separator } from "../shared/separator";
 export default function FloatingMovieChat({
 	position = "bottom-right", // bottom-right | bottom-left
 	subtitle = "Your movie expert",
-	maxHeight = "h-[500px]",
 }) {
 	const [open, setOpen] = useState(false);
 	const [messages, setMessages] = useState([
@@ -30,7 +29,7 @@ export default function FloatingMovieChat({
 	const panelRef = useRef(null);
 	const messagesRef = useRef(null);
 	const toggleButtonRef = useRef(null);
-	const posClass = position === "bottom-left" ? "left-4" : "right-4";
+	const posClass = position === "bottom-left" ? "left-4" : "right-1 xs:right-4";
 
 	const { mutate: getExpert } = useMutation({
 		mutationFn: userApi.getExpertHelp,
@@ -111,7 +110,7 @@ export default function FloatingMovieChat({
 	}
 
 	return (
-		<div className={`fixed ${posClass} bottom-6 z-50`}>
+		<div className={`fixed ${posClass} bottom-4 md:bottom-6 z-50 touch-auto`}>
 			<div
 				ref={panelRef}
 				className={`transform transition-all duration-200 ${
@@ -162,7 +161,7 @@ export default function FloatingMovieChat({
 					</div>
 					<Separator />
 
-					<div ref={messagesRef} className={`p-3 space-y-3 overflow-y-auto ${maxHeight}`}>
+					<div ref={messagesRef} className={`p-3 space-y-3 overflow-y-auto h-[50vh] max-h-[500px]`}>
 						{messages?.map((m) => (
 							<div key={m.id} className={`flex ${m.role === "assistant" ? "justify-start" : "justify-end"}`}>
 								<div
@@ -238,7 +237,7 @@ export default function FloatingMovieChat({
 				</div>
 			</div>
 
-			<div className="mt-3 flex justify-end">
+			<div className="mt-1 sm:mt-3 flex justify-end">
 				<Button
 					ref={toggleButtonRef}
 					onClick={() => {
@@ -251,7 +250,7 @@ export default function FloatingMovieChat({
 					}}
 					aria-expanded={open}
 					aria-label={open ? "Close movie chat" : "Open movie chat"}
-					className="relative inline-flex items-center justify-center w-14 h-14 rounded-full shadow-lg transform hover:scale-105 transition-transform focus:outline-none">
+					className="relative inline-flex items-center justify-center w-12 h-12 xs:w-14 xs:h-14 rounded-full shadow-lg transform hover:scale-105 transition-transform focus:outline-none">
 					<span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full px-1.5 py-0.5 font-semibold">
 						AI
 					</span>

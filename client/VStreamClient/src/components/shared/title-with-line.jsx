@@ -4,7 +4,9 @@ import { Separator } from "./separator";
 const TitleWithLine = ({ title, includeLine = true }) => {
 	return (
 		<div className="py-2">
-			<h1 className="w-max text-3xl font-semibold text-gradient">{title}</h1>
+			<h1 className="max-w-max break-before-auto text-xl md:text-2xl lg:text-3xl font-semibold text-gradient">
+				{title}
+			</h1>
 			{includeLine && <Separator className={"mt-2"} />}
 		</div>
 	);

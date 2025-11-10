@@ -109,7 +109,7 @@ export const SETTINGS_MENU_ITEMS = [
 		name: "Profile",
 		value: "profile",
 		icon: UserRoundCog,
-		path: "/settings",
+		path: "/settings/profile",
 		for: "user",
 	},
 	{
@@ -135,7 +135,7 @@ export const SETTINGS_MENU_ITEMS = [
 	},
 ];
 
-export const EXCLUDE_SEARCHBAR_ROUTES = ["/settings", "/stream"];
+export const INCLUDE_SEARCHBAR_ROUTES = ["/home"];
 
 export const MODAL_TITLE_INFO = {
 	MOVIE: {

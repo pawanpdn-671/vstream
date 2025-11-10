@@ -15,7 +15,7 @@ const UserLogoutModal = ({ logoutUser }) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="outline" className={"justify-start"}>
+				<Button variant="outline" className={"min-w-full xs:min-w-[300px] md:min-w-full justify-start"}>
 					<LogOut size={20} /> Logout
 				</Button>
 			</DialogTrigger>
@@ -23,7 +23,7 @@ const UserLogoutModal = ({ logoutUser }) => {
 				<DialogHeader>
 					<DialogTitle>Confirmation</DialogTitle>
 				</DialogHeader>
-				<div className="pb-5">
+				<div className="pb-5 text-center xs:text-left">
 					<p>Are you sure you want to logout?</p>
 				</div>
 				<DialogFooter>
