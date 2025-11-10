@@ -56,7 +56,7 @@ func RefreshTokenHandler(client *mongo.Client) gin.HandlerFunc {
 			MaxAge:   int(utils.TokenExpirationTime.Seconds()),
 			Secure:   isProd,
 			HttpOnly: true,
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 		})
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:     "refresh_token",
@@ -65,7 +65,7 @@ func RefreshTokenHandler(client *mongo.Client) gin.HandlerFunc {
 			MaxAge:   int(utils.RefreshTokenExpirationTime.Seconds()),
 			Secure:   isProd,
 			HttpOnly: true,
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 		})
 
 		c.JSON(http.StatusOK, gin.H{"message": "Tokens refreshed"})
