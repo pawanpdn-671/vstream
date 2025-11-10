@@ -13,14 +13,14 @@ import { Separator } from "../shared/separator";
 
 export default function FloatingMovieChat({
 	position = "bottom-right", // bottom-right | bottom-left
-	subtitle = "Your movie expert",
+	subtitle = "Your Movie Expert",
 }) {
 	const [open, setOpen] = useState(false);
 	const [messages, setMessages] = useState([
 		{
 			id: 1,
 			role: "assistant",
-			content: "Hi! I'm VStream — ask me for recommendations, explanations, trivia, or cast info.",
+			content: "Hi! I'm VStream — ask me movie related topics eg.recommendations, explanations, trivia, etc.",
 		},
 	]);
 	const [input, setInput] = useState("");
