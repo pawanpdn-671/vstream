@@ -19,24 +19,26 @@ export function Footer() {
 						<h4 className="font-bold font-poppins">Product</h4>
 						<ul className="space-y-2 text-sm text-muted-foreground">
 							<li>
-								<a href="#" className="hover:text-foreground transition-colors">
+								<a href="#features" className="hover:text-foreground transition-colors">
 									Features
 								</a>
 							</li>
 							<li>
-								<a href="#" className="hover:text-foreground transition-colors">
-									Pricing
+								<a href="#testimonials" className="hover:text-foreground transition-colors">
+									Testimonials
 								</a>
 							</li>
 							<li>
-								<a href="#" className="hover:text-foreground transition-colors">
+								<a
+									href="https://github.com/pawanpdn-671/vstream/tree/main/server/VStreamServer"
+									className="hover:text-foreground transition-colors">
 									API
 								</a>
 							</li>
 						</ul>
 					</div>
 
-					<div className="space-y-3">
+					{/* <div className="space-y-3">
 						<h4 className="font-bold font-poppins">Company</h4>
 						<ul className="space-y-2 text-sm text-muted-foreground">
 							<li>
@@ -55,9 +57,9 @@ export function Footer() {
 								</a>
 							</li>
 						</ul>
-					</div>
+					</div> */}
 
-					<div className="space-y-3">
+					{/* <div className="space-y-3">
 						<h4 className="font-bold font-poppins">Legal</h4>
 						<ul className="space-y-2 text-sm text-muted-foreground">
 							<li>
@@ -76,7 +78,7 @@ export function Footer() {
 								</a>
 							</li>
 						</ul>
-					</div>
+					</div> */}
 				</div>
 
 				<div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between text-sm text-muted-foreground">

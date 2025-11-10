@@ -2,6 +2,7 @@ import { Button } from "@/components/shared/button";
 import LogoText from "../shared/logo-text";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Home } from "lucide-react";
 
 export function Header() {
 	const { isAuthenticated } = useAuthStore();
@@ -29,10 +30,9 @@ export function Header() {
 							<Link to="/login">Sign In</Link>
 						</Button>
 					)}
-					<Button>
-						<Link to={isAuthenticated ? "/home" : "/register"}>
-							{isAuthenticated ? "Go to Movie Library" : "Get Started"}
-						</Link>
+					<Button size="sm">
+						<Home />
+						<Link to={isAuthenticated ? "/home" : "/register"}>{isAuthenticated ? "Home" : "Get Started"}</Link>
 					</Button>
 				</div>
 			</div>

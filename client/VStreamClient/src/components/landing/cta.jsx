@@ -1,7 +1,10 @@
 import { Button } from "@/components/shared/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function CTA() {
+	const navigate = useNavigate();
+
 	return (
 		<section className="py-20 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-4xl mx-auto">
@@ -18,11 +21,15 @@ export function CTA() {
 						</p>
 
 						<div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-							<Button size="lg" className="text-white gap-2">
+							<Button onClick={() => navigate("/home")} size="lg" className="text-white gap-2">
 								Start Free Trial
 								<ArrowRight className="w-4 h-4" />
 							</Button>
-							<Button size="lg" variant="outline" className="border-border hover:bg-muted bg-transparent">
+							<Button
+								onClick={() => navigate("/home")}
+								size="lg"
+								variant="outline"
+								className="border-border hover:bg-muted bg-transparent">
 								Learn More
 							</Button>
 						</div>

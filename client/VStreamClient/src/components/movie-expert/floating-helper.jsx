@@ -29,7 +29,7 @@ export default function FloatingMovieChat({
 	const panelRef = useRef(null);
 	const messagesRef = useRef(null);
 	const toggleButtonRef = useRef(null);
-	const posClass = position === "bottom-left" ? "left-4" : "right-1 xs:right-4";
+	const posClass = position === "bottom-left" ? "left-4" : "right-2 xs:right-4";
 
 	const { mutate: getExpert } = useMutation({
 		mutationFn: userApi.getExpertHelp,
