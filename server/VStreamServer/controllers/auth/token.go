@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -46,12 +47,14 @@ func RefreshTokenHandler(client *mongo.Client) gin.HandlerFunc {
 
 		newToken, newRefreshToken, _ := utils.GenerateAllToken(user.Email, user.FirstName, user.LastName, user.Role, user.UserID)
 
+		isProd := os.Getenv("GIN_MODE") == "release" || gin.Mode() == gin.ReleaseMode
+
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:     "access_token",
 			Value:    newToken,
 			Path:     "/",
 			MaxAge:   int(utils.TokenExpirationTime.Seconds()),
-			Secure:   true,
+			Secure:   isProd,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 		})
@@ -60,7 +63,7 @@ func RefreshTokenHandler(client *mongo.Client) gin.HandlerFunc {
 			Value:    newRefreshToken,
 			Path:     "/",
 			MaxAge:   int(utils.RefreshTokenExpirationTime.Seconds()),
-			Secure:   true,
+			Secure:   isProd,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 		})

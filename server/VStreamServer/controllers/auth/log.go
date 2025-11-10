@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -49,12 +50,14 @@ func LoginUser(client *mongo.Client) gin.HandlerFunc {
 			return
 		}
 
+		isProd := os.Getenv("GIN_MODE") == "release" || gin.Mode() == gin.ReleaseMode
+
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:     "access_token",
 			Value:    token,
 			Path:     "/",
 			MaxAge:   int(utils.TokenExpirationTime.Seconds()),
-			Secure:   true,
+			Secure:   isProd,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 		})
@@ -63,7 +66,7 @@ func LoginUser(client *mongo.Client) gin.HandlerFunc {
 			Value:    refreshToken,
 			Path:     "/",
 			MaxAge:   int(utils.RefreshTokenExpirationTime.Seconds()),
-			Secure:   true,
+			Secure:   isProd,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 		})
