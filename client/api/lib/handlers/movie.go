@@ -658,7 +658,9 @@ func GenerateMovieFromStory(c *fiber.Ctx) error {
 }
 
 // getGenresJSON returns the genres JSON string
+// In serverless, we embed the full genres list
 func getGenresJSON() string {
+	// Full genres list (same as data/genres.json)
 	return `[
 		{"genre_id": 1, "genre_name": "Action"},
 		{"genre_id": 2, "genre_name": "Adventure"},
@@ -674,7 +676,52 @@ func getGenresJSON() string {
 		{"genre_id": 12, "genre_name": "Mystery"},
 		{"genre_id": 13, "genre_name": "Romance"},
 		{"genre_id": 14, "genre_name": "Science Fiction"},
-		{"genre_id": 15, "genre_name": "Thriller"}
+		{"genre_id": 15, "genre_name": "Thriller"},
+		{"genre_id": 16, "genre_name": "War"},
+		{"genre_id": 17, "genre_name": "Western"},
+		{"genre_id": 18, "genre_name": "Biography"},
+		{"genre_id": 19, "genre_name": "Family"},
+		{"genre_id": 20, "genre_name": "Sport"},
+		{"genre_id": 21, "genre_name": "Music"},
+		{"genre_id": 22, "genre_name": "Superhero"},
+		{"genre_id": 23, "genre_name": "Noir"},
+		{"genre_id": 24, "genre_name": "Psychological"},
+		{"genre_id": 25, "genre_name": "Surreal"},
+		{"genre_id": 26, "genre_name": "Political"},
+		{"genre_id": 27, "genre_name": "Disaster"},
+		{"genre_id": 28, "genre_name": "Experimental"},
+		{"genre_id": 29, "genre_name": "Legal"},
+		{"genre_id": 30, "genre_name": "Teen"},
+		{"genre_id": 31, "genre_name": "Tragedy"},
+		{"genre_id": 32, "genre_name": "Epic"},
+		{"genre_id": 33, "genre_name": "Urban"},
+		{"genre_id": 34, "genre_name": "Cyberpunk"},
+		{"genre_id": 35, "genre_name": "Steampunk"},
+		{"genre_id": 36, "genre_name": "Post-Apocalyptic"},
+		{"genre_id": 37, "genre_name": "Space Opera"},
+		{"genre_id": 38, "genre_name": "Martial Arts"},
+		{"genre_id": 39, "genre_name": "Detective"},
+		{"genre_id": 40, "genre_name": "Coming-of-Age"},
+		{"genre_id": 41, "genre_name": "Fairy Tale"},
+		{"genre_id": 42, "genre_name": "Mythology"},
+		{"genre_id": 43, "genre_name": "Spy"},
+		{"genre_id": 44, "genre_name": "Parody"},
+		{"genre_id": 45, "genre_name": "Satire"},
+		{"genre_id": 46, "genre_name": "Slasher"},
+		{"genre_id": 47, "genre_name": "Zombie"},
+		{"genre_id": 48, "genre_name": "Vampire"},
+		{"genre_id": 49, "genre_name": "Alien"},
+		{"genre_id": 50, "genre_name": "Found Footage"},
+		{"genre_id": 51, "genre_name": "Silent"},
+		{"genre_id": 52, "genre_name": "Short Film"},
+		{"genre_id": 53, "genre_name": "Black Comedy"},
+		{"genre_id": 54, "genre_name": "Romantic Comedy"},
+		{"genre_id": 55, "genre_name": "Psychological Horror"},
+		{"genre_id": 56, "genre_name": "Time Travel"},
+		{"genre_id": 57, "genre_name": "Dystopian"},
+		{"genre_id": 58, "genre_name": "Utopian"},
+		{"genre_id": 59, "genre_name": "Mockumentary"},
+		{"genre_id": 60, "genre_name": "Heist"}
 	]`
 }
 
@@ -723,6 +770,7 @@ func getYouTubeVideoID(ctx context.Context, title string) (string, error) {
 }
 
 // getMovieByTitle fetches movie data by title from external APIs
+// Uses Collect API first, then OMDb as fallback
 func getMovieByTitle(ctx context.Context, title string) (map[string]interface{}, error) {
 	if title == "" {
 		return nil, fmt.Errorf("missing title")
@@ -734,29 +782,77 @@ func getMovieByTitle(ctx context.Context, title string) (map[string]interface{},
 		"imdb_id":     "",
 	}
 
-	// Try OMDb API
-	omdbAPIKey := os.Getenv("OMDB_API_KEY")
-	if omdbAPIKey != "" {
-		omdbURL := fmt.Sprintf("http://www.omdbapi.com/?apikey=%s&t=%s", omdbAPIKey, url.QueryEscape(title))
+	// Try Collect API first
+	collectURL := os.Getenv("COLLECT_BASE_URL")
+	collectAPIKey := os.Getenv("COLLECT_API_KEY")
+	if collectURL != "" && collectAPIKey != "" {
+		fullURL := strings.Replace(collectURL, "{title}", url.QueryEscape(title), 1)
 
-		omdbCtx, omdbCancel := context.WithTimeout(ctx, 10*time.Second)
-		defer omdbCancel()
+		collectCtx, collectCancel := context.WithTimeout(ctx, 15*time.Second)
+		defer collectCancel()
 
-		omdbReq, err := http.NewRequestWithContext(omdbCtx, "GET", omdbURL, nil)
+		req, err := http.NewRequestWithContext(collectCtx, "GET", fullURL, nil)
 		if err == nil {
-			resp, err := http.DefaultClient.Do(omdbReq)
-			if err == nil {
-				defer resp.Body.Close()
+			req.Header.Add("Content-Type", "application/json")
+			req.Header.Add("Authorization", collectAPIKey)
 
-				if resp.StatusCode == http.StatusOK {
-					var omdbData map[string]interface{}
-					if err := json.NewDecoder(resp.Body).Decode(&omdbData); err == nil {
-						if responseVal, ok := omdbData["Response"].(string); !ok || !strings.EqualFold(responseVal, "False") {
-							if poster, ok := omdbData["Poster"].(string); ok && poster != "N/A" {
-								movie["poster_path"] = poster
-							}
-							if imdbID, ok := omdbData["imdbID"].(string); ok && imdbID != "N/A" {
-								movie["imdb_id"] = imdbID
+			res, err := http.DefaultClient.Do(req)
+			if err == nil {
+				defer res.Body.Close()
+
+				body, err := io.ReadAll(res.Body)
+				if err == nil {
+					var parsed struct {
+						Success bool                     `json:"success"`
+						Result  []map[string]interface{} `json:"result"`
+					}
+
+					if err := json.Unmarshal(body, &parsed); err == nil && len(parsed.Result) > 0 {
+						r := parsed.Result[0]
+						if t, ok := r["title"].(string); ok && t != "" {
+							movie["title"] = t
+						}
+						if p, ok := r["poster"].(string); ok && p != "" {
+							movie["poster_path"] = p
+						}
+						if id, ok := r["imdb_id"].(string); ok && id != "" {
+							movie["imdb_id"] = id
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Fallback to OMDb if needed (poster or imdb_id still empty)
+	if movie["poster_path"] == "" || movie["imdb_id"] == "" {
+		omdbAPIKey := os.Getenv("OMDB_API_KEY")
+		if omdbAPIKey != "" {
+			omdbURL := fmt.Sprintf("http://www.omdbapi.com/?apikey=%s&t=%s", omdbAPIKey, url.QueryEscape(title))
+
+			omdbCtx, omdbCancel := context.WithTimeout(ctx, 10*time.Second)
+			defer omdbCancel()
+
+			omdbReq, err := http.NewRequestWithContext(omdbCtx, "GET", omdbURL, nil)
+			if err == nil {
+				resp, err := http.DefaultClient.Do(omdbReq)
+				if err == nil {
+					defer resp.Body.Close()
+
+					if resp.StatusCode == http.StatusOK {
+						var omdbData map[string]interface{}
+						if err := json.NewDecoder(resp.Body).Decode(&omdbData); err == nil {
+							if responseVal, ok := omdbData["Response"].(string); !ok || !strings.EqualFold(responseVal, "False") {
+								if movie["poster_path"] == "" {
+									if poster, ok := omdbData["Poster"].(string); ok && poster != "N/A" {
+										movie["poster_path"] = poster
+									}
+								}
+								if movie["imdb_id"] == "" {
+									if imdbID, ok := omdbData["imdbID"].(string); ok && imdbID != "N/A" {
+										movie["imdb_id"] = imdbID
+									}
+								}
 							}
 						}
 					}
