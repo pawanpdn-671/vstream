@@ -2,11 +2,15 @@
 	"version": 2,
 	"builds": [
 		{
-			"src": "api/index.go",
-			"use": "@vercel/go",
+			"src": "package.json",
+			"use": "@vercel/static-build",
 			"config": {
-				"maxDuration": 30
+				"distDir": "dist"
 			}
+		},
+		{
+			"src": "api/index.go",
+			"use": "@vercel/go"
 		}
 	],
 	"routes": [
