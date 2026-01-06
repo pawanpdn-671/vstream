@@ -1,7 +1,7 @@
 import api from "@/config/axiosConfig";
 
 export const movieApi = {
-	getMovies: ({ pageParam, limit, search, genre }) =>
+	getMovies: ({ pageParam, limit = 10, search, genre }) =>
 		api.get("/movies", { params: { page: pageParam, limit, search, genre } }),
 	getMovieById: (id) => api.get(`/movie/${id}`),
 	getGenres: () => api.get("/genres"),

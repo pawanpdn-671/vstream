@@ -25,4 +25,4 @@ Thumbs.db
 npm-debug.log*
 
 # Old server (now using serverless API)
-server/
+# server/

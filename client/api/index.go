@@ -110,6 +110,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		r.URL.Path = "/api" + r.URL.Path
 	}
 
+	// CRITICAL: Set RequestURI for Fiber adaptor to properly parse query parameters
+	// Vercel's serverless environment doesn't set this field, causing c.Query() to return empty strings
+	r.RequestURI = r.URL.RequestURI()
+
 	// Use Fiber's adaptor to convert http.Handler to Fiber
 	adaptor.FiberApp(app)(w, r)
 }
