@@ -41,16 +41,16 @@ export default HomePage;
 HomePage.Skeleton = function HomeSkeletonWrapper() {
 	return (
 		<>
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
-			<Skeleton className="h-[400px] w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
+			<Skeleton className="aspect-2/3 w-full rounded-md" />
 		</>
 	);
 };
