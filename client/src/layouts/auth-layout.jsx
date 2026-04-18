@@ -10,7 +10,7 @@ const AuthLayout = ({ children }) => {
 			</div>
 
 			{/* Test Credentials Popup */}
-			<div className="hidden lg:block absolute left-4 bottom-4 z-10">
+			<div className="absolute left-4 bottom-4 z-10">
 				<div className="bg-black/70 backdrop-blur-sm text-white p-4 rounded-lg shadow-lg max-w-[280px]">
 					<div className="flex items-center gap-2 mb-2">
 						<span className="text-lg">🧪</span>
