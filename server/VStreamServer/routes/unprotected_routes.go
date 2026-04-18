@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func SetupUnprotectedRoutes(router *gin.Engine, client *mongo.Client) {
+func SetupUnprotectedRoutes(router *gin.RouterGroup, client *mongo.Client) {
 	movie.RegisterPublicRoutes(router, client)
 	auth.RegisterPublicRoutes(router, client)
 }

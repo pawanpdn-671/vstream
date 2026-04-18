@@ -62,8 +62,9 @@ func main() {
 		}
 	}()
 
-	routes.SetupUnprotectedRoutes(router, client)
-	routes.SetupProtectedRoutes(router, client)
+	api := router.Group("/api")
+	routes.SetupUnprotectedRoutes(api, client)
+	routes.SetupProtectedRoutes(api, client)
 
 	if err := router.Run(":8080"); err != nil {
 		fmt.Println("Failed to start server", err)

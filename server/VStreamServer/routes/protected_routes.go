@@ -9,15 +9,16 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func SetupProtectedRoutes(router *gin.Engine, client *mongo.Client) {
-	router.Use(middleware.AuthMiddleware())
+func SetupProtectedRoutes(router *gin.RouterGroup, client *mongo.Client) {
+	protected := router.Group("")
+	protected.Use(middleware.AuthMiddleware())
 
 	// MOVIES
-	movie.RegisterPrivateRoutes(router, client)
+	movie.RegisterPrivateRoutes(protected, client)
 
 	// USERS
-	user.RegisterPrivateRoutes(router, client)
+	user.RegisterPrivateRoutes(protected, client)
 
 	//REVIEWS
-	review.RegisterPrivateRoutes(router, client)
+	review.RegisterPrivateRoutes(protected, client)
 }

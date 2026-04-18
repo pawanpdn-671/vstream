@@ -646,10 +646,11 @@ func GenerateMovieFromStory(c *fiber.Ctx) error {
 		mergedMovies = append(mergedMovies, movieData)
 	}
 
-	// Save to database asynchronously
-	go func() {
-		saveMoviesToDB(client, mergedMovies, req.UserId, req.FirstName, req.LastName)
-	}()
+	// Save to database synchronously before returning
+	// In serverless environments (Vercel), goroutines are killed when the function returns,
+	// so the async save would never complete. Saving synchronously ensures movies
+	// are in the DB when the user clicks on them.
+	saveMoviesToDB(client, mergedMovies, req.UserId, req.FirstName, req.LastName)
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"success": true,

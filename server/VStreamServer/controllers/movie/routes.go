@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
+func RegisterPrivateRoutes(router gin.IRoutes, client *mongo.Client) {
 	router.GET("/movie/:imdb_id", GetMovie(client))
 	router.POST("/movie/add", AddMovie(client))
 	router.GET("/recommended_movies", GetRecommendedMovies(client))
@@ -15,7 +15,7 @@ func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
 	router.PATCH("/movies/:imdb_id/reaction", LikeOrDislikeMovie(client))
 }
 
-func RegisterPublicRoutes(router *gin.Engine, client *mongo.Client) {
+func RegisterPublicRoutes(router gin.IRoutes, client *mongo.Client) {
 	router.GET("/movies", GetMovies(client))
 	router.GET("/genres", GetGenres(client))
 }

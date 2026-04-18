@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func RegisterPrivateRoutes(router *gin.Engine, client *mongo.Client) {
+func RegisterPrivateRoutes(router gin.IRoutes, client *mongo.Client) {
 	router.GET("/me", GetCurrentUser(client))
 	router.GET("/users/:user_id/avatar", GetUserAvatar(client))
 	router.GET("/me/bookmarked_movies", GetBookmarkedMovies(client))

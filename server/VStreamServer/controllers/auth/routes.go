@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func RegisterPublicRoutes(router *gin.Engine, client *mongo.Client) {
+func RegisterPublicRoutes(router gin.IRoutes, client *mongo.Client) {
 	router.POST("/register", RegisterUser(client))
 	router.POST("/login", LoginUser(client))
 	router.POST("/logout", LogoutHandler(client))
